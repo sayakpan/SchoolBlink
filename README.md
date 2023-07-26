@@ -7,13 +7,21 @@ SchoolBlink is a Django-based website that allows schools to list themselves, sh
 To get started with SchoolBlink, follow these steps:
 
 1. Clone the repository to your local system:
+
    ```git clone https://github.com/sayakpan/SchoolBlink.git```
+   
 2. Install Django:
+   
    ```pip install django```
+   
 3. Navigate to the project directory:
+   
    ```cd SchoolBlink```
+   
 4. Run the development server:
+   
    ```python manage.py runserver```
+
 
 ## Technologies Used
 
