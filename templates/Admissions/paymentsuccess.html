@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+{% extends 'Profiles/base.html' %}
+{% load static %}
+{% block body_block %}
+
+<div class="container my-5">
+    <div class="p-5 text-center bg-body-tertiary rounded-3">
+        <svg class="yes-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="96" height="96">
+            <path
+                d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm16.28-2.72a.751.751 0 0 0-.018-1.042.751.751 0 0 0-1.042-.018l-5.97 5.97-2.47-2.47a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042l3 3a.75.75 0 0 0 1.06 0Z">
+            </path>
+        </svg>
+        </svg>
+        <h1 class="text-body-emphasis text-green">Awesome!</h1>
+        <p class="col-lg-8 mx-auto fs-5 text-muted">
+            Thank you for your payment. Your application is submitted to the school.
+        </p>
+        <div class="d-inline-flex gap-2 mb-5">
+            <a href="{% url 'Profiles:index' %}"
+                class="d-inline-flex align-items-center btn btn-primary btn-lg px-4 rounded-pill" type="button">
+                Go to Home
+                <svg style="fill: white;" class="align-items-center" xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 16 16" width="16" height="16">
+                    <path
+                        d="M8.22 2.97a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l2.97-2.97H3.75a.75.75 0 0 1 0-1.5h7.44L8.22 4.03a.75.75 0 0 1 0-1.06Z">
+                    </path>
+                </svg>
+            </a>
+        </div>
+    </div>
+</div>
+
+{%endblock%}

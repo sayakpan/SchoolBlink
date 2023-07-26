@@ -1,0 +1,1507 @@
+<!DOCTYPE html>
+{% extends 'Profiles/base.html' %}
+{% load static %}
+{% block body_block %}
+
+<section>
+    <section class="container">
+        <div class="row ">
+            <div class="col-2">
+                <img src="{{ school.logo.url }}" width="150" height="150"
+                    class="ms-4 my-3 border shadow-sm rounded-circle" style="object-fit: cover;" alt="...">
+            </div>
+            <div class="col-6 mt-5 justify-content-right">
+                <h2 class="h3 text-start text-navy">{{school.school_name}}</h3>
+                    <div class="text-secondary">{{school.city.city_name}}, {{school.state.state_name}}</div>
+            </div>
+        </div>
+    </section>
+    <section class="container mt-3">
+        <div class="row">
+            <div class="col-9">
+                {% if admission_open_classes %}
+                <section id="apply-section">
+                    <div class="row">
+                        <div class="card border-1 rounded-lg shadow-sm">
+                            <div class="card-body">
+                                <h4 class="mb-4 h4-blue fw-bold">Apply Now | <small style="font-size: 14px;"
+                                        class="text-green">Official
+                                        Application Partner</small></h4>
+                                <table class="table mt-3 text-center table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Class</th>
+                                            <th scope="col">Seats Left</th>
+                                            <th scope="col">Application Fees</th>
+                                            <th scope="col">Status</th>
+                                            <th scope="col">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for class in admission_open_classes %}
+                                        <tr>
+                                            <td>{{class.class_opened}}</td>
+                                            <td>{{class.form_limit}}</td>
+                                            <td> &#x20B9 {{class.form_price}}</td>
+                                            <td
+                                                class="fw-bold{% if class.status == '1' %} text-green {% else %} text-danger {%endif%}">
+                                                {{class.get_status_display}}</td>
+                                            <td>
+                                                {% if class.status == '1' and user.is_parent %}
+                                                <a href="{% url 'Admissions:application' slug=school.slug class_id=class.class_opened.id %}"
+                                                    type="button" class="btn btn-sm btn-outline-success">Apply
+                                                    Now</a>
+                                                {% elif user.is_school %}
+                                                <a href="{% url 'Profiles:logoutPage' %}" type="button"
+                                                    class="btn btn-sm btn-outline-warning">Login as
+                                                    Parent</a>
+                                                {% else %}
+                                                <div class="text-muted">N/A</div>
+                                                {%endif%}
+                                            </td>
+                                        </tr>
+                                        {%endfor%}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                {%endif%}
+                <section id="basic-details-section">
+                    <div class="row mt-4">
+                        <div class="card border-1 rounded-lg shadow-sm">
+                            <div class="card-body">
+                                <h4 class="mb-4 h4-blue fw-bold">Basic Details</h4>
+                                <div class="row mb-3 row-cols-4">
+                                    {% if school.school_board.all %}
+                                    <div class="col">
+                                        <div class="text-secondary">Board</div>
+                                        <div class="text-navy h6 fw-bold">
+                                            {% for board in school.school_board.all %}
+                                            {{board}}{% if not forloop.last %}, {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    {%endif%}
+                                    {% if school.school_format %}
+                                    <div class="col">
+                                        <div class="text-secondary">School Format</div>
+                                        <div class="text-navy h6 fw-bold">{{school.school_format}}</div>
+                                    </div>
+                                    {%endif%}
+                                    {% if school.school_type %}
+                                    <div class="col">
+                                        <div class="text-secondary">School Level</div>
+                                        <div class="text-navy h6 fw-bold">{{school.school_type}}</div>
+                                    </div>
+                                    {%endif%}
+                                    {% if school.year_established %}
+                                    <div class="col">
+                                        <div class="text-secondary">Year Established</div>
+                                        <div class="text-navy h6 fw-bold">{{school.year_established}}</div>
+                                    </div>
+                                    {%endif%}
+                                    {% if school.coed_status %}
+                                    <div class="col">
+                                        <div class="text-secondary">Co-ed Status</div>
+                                        <div class="text-navy h6 fw-bold">
+                                            {{school.get_coed_status_display}}
+                                        </div>
+                                    </div>
+                                    {%endif%}
+                                    {% if school.school_medium %}
+                                    <div class="col">
+                                        <div class="text-secondary">School Medium</div>
+                                        <div class="text-navy h6 fw-bold">{{school.get_school_medium_display}}</div>
+                                    </div>
+                                    {%endif%}
+                                    {% if school.ownership %}
+                                    <div class="col">
+                                        <div class="text-secondary">Ownership</div>
+                                        <div class="text-navy h6 fw-bold">{{school.get_ownership_display}}</div>
+                                    </div>
+                                    {%endif%}
+                                    {% if school.school_timings %}
+                                    <div class="col">
+                                        <div class="text-secondary">School Timings</div>
+                                        <div class="text-navy h6 fw-bold">{{school.school_timings}}</div>
+                                    </div>
+                                    {%endif%}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section id="about-section">
+                    <div class="row mt-4">
+                        <div class="card border-1 rounded-lg shadow-sm">
+                            <div class="card-body">
+                                <h4 class="mb-4 h4-blue fw-bold">About</h4>
+                                <p>{{school.about|linebreaks }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section id="facilities-section">
+                    <div id="facilities-section" class="row mt-4">
+                        <div class="card border-1 rounded-lg shadow-sm">
+                            <div class="card-body">
+                                <h4 class="mb-4 h4-blue fw-bold">Facilities</h4>
+                                <div class="row mt-3">
+                                    <div class="col border p-4 mx-2">
+                                        <h6 class="text-center">Class</h6>
+                                        <ul class="list-group list-group-flush mt-4">
+                                            <li
+                                                class="list-group-item d-flex justify-content-between align-items-center">
+                                                <span>AC Classes</span>
+                                                <span>
+                                                    {% if school.facilities.all.first.AC_Classes == 'Y' %}
+                                                    <svg class="yes-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm16.28-2.72a.751.751 0 0 0-.018-1.042.751.751 0 0 0-1.042-.018l-5.97 5.97-2.47-2.47a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042l3 3a.75.75 0 0 0 1.06 0Z">
+                                                        </path>
+                                                    </svg>
+                                                    {% elif school.facilities.all.first.AC_Classes == 'N' %}
+                                                    <svg class="no-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm8.036-4.024a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042L10.939 12l-2.963 2.963a.749.749 0 0 0 .326 1.275.749.749 0 0 0 .734-.215L12 13.06l2.963 2.964a.75.75 0 0 0 1.061-1.06L13.061 12l2.963-2.964a.749.749 0 0 0-.326-1.275.749.749 0 0 0-.734.215L12 10.939Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%else%}
+                                                    <svg class="unknown-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M10.97 8.265a1.45 1.45 0 0 0-.487.57.75.75 0 0 1-1.341-.67c.2-.402.513-.826.997-1.148C10.627 6.69 11.244 6.5 12 6.5c.658 0 1.369.195 1.934.619a2.45 2.45 0 0 1 1.004 2.006c0 1.033-.513 1.72-1.027 2.215-.19.183-.399.358-.579.508l-.147.123a4.329 4.329 0 0 0-.435.409v1.37a.75.75 0 1 1-1.5 0v-1.473c0-.237.067-.504.247-.736.22-.28.486-.517.718-.714l.183-.153.001-.001c.172-.143.324-.27.47-.412.368-.355.569-.676.569-1.136a.953.953 0 0 0-.404-.806C12.766 8.118 12.384 8 12 8c-.494 0-.814.121-1.03.265ZM13 17a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z">
+                                                        </path>
+                                                        <path
+                                                            d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1ZM2.5 12a9.5 9.5 0 0 0 9.5 9.5 9.5 9.5 0 0 0 9.5-9.5A9.5 9.5 0 0 0 12 2.5 9.5 9.5 0 0 0 2.5 12Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%endif%}
+                                                </span>
+                                            </li>
+                                            <li
+                                                class="list-group-item d-flex justify-content-between align-items-center">
+                                                <span>Wifi</span>
+                                                <span>
+                                                    {% if school.facilities.all.first.Wifi == 'Y' %}
+                                                    <svg class="yes-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm16.28-2.72a.751.751 0 0 0-.018-1.042.751.751 0 0 0-1.042-.018l-5.97 5.97-2.47-2.47a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042l3 3a.75.75 0 0 0 1.06 0Z">
+                                                        </path>
+                                                    </svg>
+                                                    {% elif school.facilities.all.first.Wifi == 'N' %}
+                                                    <svg class="no-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm8.036-4.024a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042L10.939 12l-2.963 2.963a.749.749 0 0 0 .326 1.275.749.749 0 0 0 .734-.215L12 13.06l2.963 2.964a.75.75 0 0 0 1.061-1.06L13.061 12l2.963-2.964a.749.749 0 0 0-.326-1.275.749.749 0 0 0-.734.215L12 10.939Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%else%}
+                                                    <svg class="unknown-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M10.97 8.265a1.45 1.45 0 0 0-.487.57.75.75 0 0 1-1.341-.67c.2-.402.513-.826.997-1.148C10.627 6.69 11.244 6.5 12 6.5c.658 0 1.369.195 1.934.619a2.45 2.45 0 0 1 1.004 2.006c0 1.033-.513 1.72-1.027 2.215-.19.183-.399.358-.579.508l-.147.123a4.329 4.329 0 0 0-.435.409v1.37a.75.75 0 1 1-1.5 0v-1.473c0-.237.067-.504.247-.736.22-.28.486-.517.718-.714l.183-.153.001-.001c.172-.143.324-.27.47-.412.368-.355.569-.676.569-1.136a.953.953 0 0 0-.404-.806C12.766 8.118 12.384 8 12 8c-.494 0-.814.121-1.03.265ZM13 17a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z">
+                                                        </path>
+                                                        <path
+                                                            d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1ZM2.5 12a9.5 9.5 0 0 0 9.5 9.5 9.5 9.5 0 0 0 9.5-9.5A9.5 9.5 0 0 0 12 2.5 9.5 9.5 0 0 0 2.5 12Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%endif%}
+                                                </span>
+                                            </li>
+                                            <li
+                                                class="list-group-item d-flex justify-content-between align-items-center">
+                                                <span>Smart Classes</span>
+                                                <span>
+                                                    {% if school.facilities.all.first.Smart_Classes == 'Y' %}
+                                                    <svg class="yes-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm16.28-2.72a.751.751 0 0 0-.018-1.042.751.751 0 0 0-1.042-.018l-5.97 5.97-2.47-2.47a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042l3 3a.75.75 0 0 0 1.06 0Z">
+                                                        </path>
+                                                    </svg>
+                                                    {% elif school.facilities.all.first.Smart_Classes == 'N' %}
+                                                    <svg class="no-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm8.036-4.024a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042L10.939 12l-2.963 2.963a.749.749 0 0 0 .326 1.275.749.749 0 0 0 .734-.215L12 13.06l2.963 2.964a.75.75 0 0 0 1.061-1.06L13.061 12l2.963-2.964a.749.749 0 0 0-.326-1.275.749.749 0 0 0-.734.215L12 10.939Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%else%}
+                                                    <svg class="unknown-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M10.97 8.265a1.45 1.45 0 0 0-.487.57.75.75 0 0 1-1.341-.67c.2-.402.513-.826.997-1.148C10.627 6.69 11.244 6.5 12 6.5c.658 0 1.369.195 1.934.619a2.45 2.45 0 0 1 1.004 2.006c0 1.033-.513 1.72-1.027 2.215-.19.183-.399.358-.579.508l-.147.123a4.329 4.329 0 0 0-.435.409v1.37a.75.75 0 1 1-1.5 0v-1.473c0-.237.067-.504.247-.736.22-.28.486-.517.718-.714l.183-.153.001-.001c.172-.143.324-.27.47-.412.368-.355.569-.676.569-1.136a.953.953 0 0 0-.404-.806C12.766 8.118 12.384 8 12 8c-.494 0-.814.121-1.03.265ZM13 17a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z">
+                                                        </path>
+                                                        <path
+                                                            d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1ZM2.5 12a9.5 9.5 0 0 0 9.5 9.5 9.5 9.5 0 0 0 9.5-9.5A9.5 9.5 0 0 0 12 2.5 9.5 9.5 0 0 0 2.5 12Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%endif%}
+                                                </span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="col border p-4 mx-2 ">
+                                        <h6 class="text-center">Boarding</h6>
+                                        <ul class="list-group list-group-flush mt-4">
+                                            <li
+                                                class="list-group-item d-flex justify-content-between align-items-center">
+                                                <span>Boys Hostel</span>
+                                                <span>
+                                                    {% if school.facilities.all.first.Boys_Hostel == 'Y' %}
+                                                    <svg class="yes-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm16.28-2.72a.751.751 0 0 0-.018-1.042.751.751 0 0 0-1.042-.018l-5.97 5.97-2.47-2.47a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042l3 3a.75.75 0 0 0 1.06 0Z">
+                                                        </path>
+                                                    </svg>
+                                                    {% elif school.facilities.all.first.Boys_Hostel == 'N' %}
+                                                    <svg class="no-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm8.036-4.024a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042L10.939 12l-2.963 2.963a.749.749 0 0 0 .326 1.275.749.749 0 0 0 .734-.215L12 13.06l2.963 2.964a.75.75 0 0 0 1.061-1.06L13.061 12l2.963-2.964a.749.749 0 0 0-.326-1.275.749.749 0 0 0-.734.215L12 10.939Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%else%}
+                                                    <svg class="unknown-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M10.97 8.265a1.45 1.45 0 0 0-.487.57.75.75 0 0 1-1.341-.67c.2-.402.513-.826.997-1.148C10.627 6.69 11.244 6.5 12 6.5c.658 0 1.369.195 1.934.619a2.45 2.45 0 0 1 1.004 2.006c0 1.033-.513 1.72-1.027 2.215-.19.183-.399.358-.579.508l-.147.123a4.329 4.329 0 0 0-.435.409v1.37a.75.75 0 1 1-1.5 0v-1.473c0-.237.067-.504.247-.736.22-.28.486-.517.718-.714l.183-.153.001-.001c.172-.143.324-.27.47-.412.368-.355.569-.676.569-1.136a.953.953 0 0 0-.404-.806C12.766 8.118 12.384 8 12 8c-.494 0-.814.121-1.03.265ZM13 17a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z">
+                                                        </path>
+                                                        <path
+                                                            d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1ZM2.5 12a9.5 9.5 0 0 0 9.5 9.5 9.5 9.5 0 0 0 9.5-9.5A9.5 9.5 0 0 0 12 2.5 9.5 9.5 0 0 0 2.5 12Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%endif%}
+                                                </span>
+                                            </li>
+                                            <li
+                                                class="list-group-item d-flex justify-content-between align-items-center">
+                                                <span>Girls Hostel</span>
+                                                <span>
+                                                    {% if school.facilities.all.first.Girls_Hostel == 'Y' %}
+                                                    <svg class="yes-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm16.28-2.72a.751.751 0 0 0-.018-1.042.751.751 0 0 0-1.042-.018l-5.97 5.97-2.47-2.47a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042l3 3a.75.75 0 0 0 1.06 0Z">
+                                                        </path>
+                                                    </svg>
+                                                    {% elif school.facilities.all.first.Girls_Hostel == 'N' %}
+                                                    <svg class="no-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm8.036-4.024a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042L10.939 12l-2.963 2.963a.749.749 0 0 0 .326 1.275.749.749 0 0 0 .734-.215L12 13.06l2.963 2.964a.75.75 0 0 0 1.061-1.06L13.061 12l2.963-2.964a.749.749 0 0 0-.326-1.275.749.749 0 0 0-.734.215L12 10.939Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%else%}
+                                                    <svg class="unknown-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M10.97 8.265a1.45 1.45 0 0 0-.487.57.75.75 0 0 1-1.341-.67c.2-.402.513-.826.997-1.148C10.627 6.69 11.244 6.5 12 6.5c.658 0 1.369.195 1.934.619a2.45 2.45 0 0 1 1.004 2.006c0 1.033-.513 1.72-1.027 2.215-.19.183-.399.358-.579.508l-.147.123a4.329 4.329 0 0 0-.435.409v1.37a.75.75 0 1 1-1.5 0v-1.473c0-.237.067-.504.247-.736.22-.28.486-.517.718-.714l.183-.153.001-.001c.172-.143.324-.27.47-.412.368-.355.569-.676.569-1.136a.953.953 0 0 0-.404-.806C12.766 8.118 12.384 8 12 8c-.494 0-.814.121-1.03.265ZM13 17a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z">
+                                                        </path>
+                                                        <path
+                                                            d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1ZM2.5 12a9.5 9.5 0 0 0 9.5 9.5 9.5 9.5 0 0 0 9.5-9.5A9.5 9.5 0 0 0 12 2.5 9.5 9.5 0 0 0 2.5 12Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%endif%}
+                                                </span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="col border p-4 mx-2 ">
+                                        <h6 class="text-center">Infrastructure</h6>
+                                        <ul class="list-group list-group-flush mt-4">
+                                            <li
+                                                class="list-group-item d-flex justify-content-between align-items-center">
+                                                <span>Cafeteria/Canteen </span>
+                                                <span>
+                                                    {% if school.facilities.all.first.Cafeteria == 'Y' %}
+                                                    <svg class="yes-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm16.28-2.72a.751.751 0 0 0-.018-1.042.751.751 0 0 0-1.042-.018l-5.97 5.97-2.47-2.47a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042l3 3a.75.75 0 0 0 1.06 0Z">
+                                                        </path>
+                                                    </svg>
+                                                    {% elif school.facilities.all.first.Cafeteria == 'N' %}
+                                                    <svg class="no-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm8.036-4.024a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042L10.939 12l-2.963 2.963a.749.749 0 0 0 .326 1.275.749.749 0 0 0 .734-.215L12 13.06l2.963 2.964a.75.75 0 0 0 1.061-1.06L13.061 12l2.963-2.964a.749.749 0 0 0-.326-1.275.749.749 0 0 0-.734.215L12 10.939Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%else%}
+                                                    <svg class="unknown-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M10.97 8.265a1.45 1.45 0 0 0-.487.57.75.75 0 0 1-1.341-.67c.2-.402.513-.826.997-1.148C10.627 6.69 11.244 6.5 12 6.5c.658 0 1.369.195 1.934.619a2.45 2.45 0 0 1 1.004 2.006c0 1.033-.513 1.72-1.027 2.215-.19.183-.399.358-.579.508l-.147.123a4.329 4.329 0 0 0-.435.409v1.37a.75.75 0 1 1-1.5 0v-1.473c0-.237.067-.504.247-.736.22-.28.486-.517.718-.714l.183-.153.001-.001c.172-.143.324-.27.47-.412.368-.355.569-.676.569-1.136a.953.953 0 0 0-.404-.806C12.766 8.118 12.384 8 12 8c-.494 0-.814.121-1.03.265ZM13 17a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z">
+                                                        </path>
+                                                        <path
+                                                            d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1ZM2.5 12a9.5 9.5 0 0 0 9.5 9.5 9.5 9.5 0 0 0 9.5-9.5A9.5 9.5 0 0 0 12 2.5 9.5 9.5 0 0 0 2.5 12Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%endif%}
+                                                </span>
+                                            </li>
+                                            <li
+                                                class="list-group-item d-flex justify-content-between align-items-center">
+                                                <span>Library/Reading Room</span>
+                                                <span>
+                                                    {% if school.facilities.all.first.Library == 'Y' %}
+                                                    <svg class="yes-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm16.28-2.72a.751.751 0 0 0-.018-1.042.751.751 0 0 0-1.042-.018l-5.97 5.97-2.47-2.47a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042l3 3a.75.75 0 0 0 1.06 0Z">
+                                                        </path>
+                                                    </svg>
+                                                    {% elif school.facilities.all.first.Library == 'N' %}
+                                                    <svg class="no-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm8.036-4.024a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042L10.939 12l-2.963 2.963a.749.749 0 0 0 .326 1.275.749.749 0 0 0 .734-.215L12 13.06l2.963 2.964a.75.75 0 0 0 1.061-1.06L13.061 12l2.963-2.964a.749.749 0 0 0-.326-1.275.749.749 0 0 0-.734.215L12 10.939Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%else%}
+                                                    <svg class="unknown-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M10.97 8.265a1.45 1.45 0 0 0-.487.57.75.75 0 0 1-1.341-.67c.2-.402.513-.826.997-1.148C10.627 6.69 11.244 6.5 12 6.5c.658 0 1.369.195 1.934.619a2.45 2.45 0 0 1 1.004 2.006c0 1.033-.513 1.72-1.027 2.215-.19.183-.399.358-.579.508l-.147.123a4.329 4.329 0 0 0-.435.409v1.37a.75.75 0 1 1-1.5 0v-1.473c0-.237.067-.504.247-.736.22-.28.486-.517.718-.714l.183-.153.001-.001c.172-.143.324-.27.47-.412.368-.355.569-.676.569-1.136a.953.953 0 0 0-.404-.806C12.766 8.118 12.384 8 12 8c-.494 0-.814.121-1.03.265ZM13 17a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z">
+                                                        </path>
+                                                        <path
+                                                            d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1ZM2.5 12a9.5 9.5 0 0 0 9.5 9.5 9.5 9.5 0 0 0 9.5-9.5A9.5 9.5 0 0 0 12 2.5 9.5 9.5 0 0 0 2.5 12Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%endif%}
+                                                </span>
+                                            </li>
+                                            <li
+                                                class="list-group-item d-flex justify-content-between align-items-center">
+                                                <span>Playground</span>
+                                                <span>
+                                                    {% if school.facilities.all.first.Playground == 'Y' %}
+                                                    <svg class="yes-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm16.28-2.72a.751.751 0 0 0-.018-1.042.751.751 0 0 0-1.042-.018l-5.97 5.97-2.47-2.47a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042l3 3a.75.75 0 0 0 1.06 0Z">
+                                                        </path>
+                                                    </svg>
+                                                    {% elif school.facilities.all.first.Playground == 'N' %}
+                                                    <svg class="no-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm8.036-4.024a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042L10.939 12l-2.963 2.963a.749.749 0 0 0 .326 1.275.749.749 0 0 0 .734-.215L12 13.06l2.963 2.964a.75.75 0 0 0 1.061-1.06L13.061 12l2.963-2.964a.749.749 0 0 0-.326-1.275.749.749 0 0 0-.734.215L12 10.939Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%else%}
+                                                    <svg class="unknown-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M10.97 8.265a1.45 1.45 0 0 0-.487.57.75.75 0 0 1-1.341-.67c.2-.402.513-.826.997-1.148C10.627 6.69 11.244 6.5 12 6.5c.658 0 1.369.195 1.934.619a2.45 2.45 0 0 1 1.004 2.006c0 1.033-.513 1.72-1.027 2.215-.19.183-.399.358-.579.508l-.147.123a4.329 4.329 0 0 0-.435.409v1.37a.75.75 0 1 1-1.5 0v-1.473c0-.237.067-.504.247-.736.22-.28.486-.517.718-.714l.183-.153.001-.001c.172-.143.324-.27.47-.412.368-.355.569-.676.569-1.136a.953.953 0 0 0-.404-.806C12.766 8.118 12.384 8 12 8c-.494 0-.814.121-1.03.265ZM13 17a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z">
+                                                        </path>
+                                                        <path
+                                                            d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1ZM2.5 12a9.5 9.5 0 0 0 9.5 9.5 9.5 9.5 0 0 0 9.5-9.5A9.5 9.5 0 0 0 12 2.5 9.5 9.5 0 0 0 2.5 12Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%endif%}
+                                                </span>
+                                            </li>
+                                            <li
+                                                class="list-group-item d-flex justify-content-between align-items-center">
+                                                <span>Auditorium/Media Room </span>
+                                                <span>
+                                                    {% if school.facilities.all.first.Auditorium == 'Y' %}
+                                                    <svg class="yes-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm16.28-2.72a.751.751 0 0 0-.018-1.042.751.751 0 0 0-1.042-.018l-5.97 5.97-2.47-2.47a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042l3 3a.75.75 0 0 0 1.06 0Z">
+                                                        </path>
+                                                    </svg>
+                                                    {% elif school.facilities.all.first.Auditorium == 'N' %}
+                                                    <svg class="no-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm8.036-4.024a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042L10.939 12l-2.963 2.963a.749.749 0 0 0 .326 1.275.749.749 0 0 0 .734-.215L12 13.06l2.963 2.964a.75.75 0 0 0 1.061-1.06L13.061 12l2.963-2.964a.749.749 0 0 0-.326-1.275.749.749 0 0 0-.734.215L12 10.939Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%else%}
+                                                    <svg class="unknown-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M10.97 8.265a1.45 1.45 0 0 0-.487.57.75.75 0 0 1-1.341-.67c.2-.402.513-.826.997-1.148C10.627 6.69 11.244 6.5 12 6.5c.658 0 1.369.195 1.934.619a2.45 2.45 0 0 1 1.004 2.006c0 1.033-.513 1.72-1.027 2.215-.19.183-.399.358-.579.508l-.147.123a4.329 4.329 0 0 0-.435.409v1.37a.75.75 0 1 1-1.5 0v-1.473c0-.237.067-.504.247-.736.22-.28.486-.517.718-.714l.183-.153.001-.001c.172-.143.324-.27.47-.412.368-.355.569-.676.569-1.136a.953.953 0 0 0-.404-.806C12.766 8.118 12.384 8 12 8c-.494 0-.814.121-1.03.265ZM13 17a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z">
+                                                        </path>
+                                                        <path
+                                                            d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1ZM2.5 12a9.5 9.5 0 0 0 9.5 9.5 9.5 9.5 0 0 0 9.5-9.5A9.5 9.5 0 0 0 12 2.5 9.5 9.5 0 0 0 2.5 12Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%endif%}
+                                                </span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col border p-4 mx-2 ">
+                                        <h6 class="text-center">Labs</h6>
+                                        <ul class="list-group list-group-flush mt-4">
+                                            <li
+                                                class="list-group-item d-flex justify-content-between align-items-center">
+                                                <span>Computer Lab</span>
+                                                <span>
+                                                    {% if school.facilities.all.first.Computer_Lab == 'Y' %}
+                                                    <svg class="yes-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm16.28-2.72a.751.751 0 0 0-.018-1.042.751.751 0 0 0-1.042-.018l-5.97 5.97-2.47-2.47a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042l3 3a.75.75 0 0 0 1.06 0Z">
+                                                        </path>
+                                                    </svg>
+                                                    {% elif school.facilities.all.first.Computer_Lab == 'N' %}
+                                                    <svg class="no-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm8.036-4.024a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042L10.939 12l-2.963 2.963a.749.749 0 0 0 .326 1.275.749.749 0 0 0 .734-.215L12 13.06l2.963 2.964a.75.75 0 0 0 1.061-1.06L13.061 12l2.963-2.964a.749.749 0 0 0-.326-1.275.749.749 0 0 0-.734.215L12 10.939Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%else%}
+                                                    <svg class="unknown-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M10.97 8.265a1.45 1.45 0 0 0-.487.57.75.75 0 0 1-1.341-.67c.2-.402.513-.826.997-1.148C10.627 6.69 11.244 6.5 12 6.5c.658 0 1.369.195 1.934.619a2.45 2.45 0 0 1 1.004 2.006c0 1.033-.513 1.72-1.027 2.215-.19.183-.399.358-.579.508l-.147.123a4.329 4.329 0 0 0-.435.409v1.37a.75.75 0 1 1-1.5 0v-1.473c0-.237.067-.504.247-.736.22-.28.486-.517.718-.714l.183-.153.001-.001c.172-.143.324-.27.47-.412.368-.355.569-.676.569-1.136a.953.953 0 0 0-.404-.806C12.766 8.118 12.384 8 12 8c-.494 0-.814.121-1.03.265ZM13 17a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z">
+                                                        </path>
+                                                        <path
+                                                            d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1ZM2.5 12a9.5 9.5 0 0 0 9.5 9.5 9.5 9.5 0 0 0 9.5-9.5A9.5 9.5 0 0 0 12 2.5 9.5 9.5 0 0 0 2.5 12Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%endif%}
+                                                </span>
+                                            </li>
+                                            <li
+                                                class="list-group-item d-flex justify-content-between align-items-center">
+                                                <span>Science Lab</span>
+                                                <span>
+                                                    {% if school.facilities.all.first.Science_Lab == 'Y' %}
+                                                    <svg class="yes-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm16.28-2.72a.751.751 0 0 0-.018-1.042.751.751 0 0 0-1.042-.018l-5.97 5.97-2.47-2.47a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042l3 3a.75.75 0 0 0 1.06 0Z">
+                                                        </path>
+                                                    </svg>
+                                                    {% elif school.facilities.all.first.Science_Lab == 'N' %}
+                                                    <svg class="no-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm8.036-4.024a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042L10.939 12l-2.963 2.963a.749.749 0 0 0 .326 1.275.749.749 0 0 0 .734-.215L12 13.06l2.963 2.964a.75.75 0 0 0 1.061-1.06L13.061 12l2.963-2.964a.749.749 0 0 0-.326-1.275.749.749 0 0 0-.734.215L12 10.939Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%else%}
+                                                    <svg class="unknown-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M10.97 8.265a1.45 1.45 0 0 0-.487.57.75.75 0 0 1-1.341-.67c.2-.402.513-.826.997-1.148C10.627 6.69 11.244 6.5 12 6.5c.658 0 1.369.195 1.934.619a2.45 2.45 0 0 1 1.004 2.006c0 1.033-.513 1.72-1.027 2.215-.19.183-.399.358-.579.508l-.147.123a4.329 4.329 0 0 0-.435.409v1.37a.75.75 0 1 1-1.5 0v-1.473c0-.237.067-.504.247-.736.22-.28.486-.517.718-.714l.183-.153.001-.001c.172-.143.324-.27.47-.412.368-.355.569-.676.569-1.136a.953.953 0 0 0-.404-.806C12.766 8.118 12.384 8 12 8c-.494 0-.814.121-1.03.265ZM13 17a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z">
+                                                        </path>
+                                                        <path
+                                                            d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1ZM2.5 12a9.5 9.5 0 0 0 9.5 9.5 9.5 9.5 0 0 0 9.5-9.5A9.5 9.5 0 0 0 12 2.5 9.5 9.5 0 0 0 2.5 12Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%endif%}
+                                                </span>
+                                            </li>
+                                            <li
+                                                class="list-group-item d-flex justify-content-between align-items-center">
+                                                <span>Robotics Lab</span>
+                                                <span>
+                                                    {% if school.facilities.all.first.Robotics_Lab == 'Y' %}
+                                                    <svg class="yes-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm16.28-2.72a.751.751 0 0 0-.018-1.042.751.751 0 0 0-1.042-.018l-5.97 5.97-2.47-2.47a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042l3 3a.75.75 0 0 0 1.06 0Z">
+                                                        </path>
+                                                    </svg>
+                                                    {% elif school.facilities.all.first.Robotics_Lab == 'N' %}
+                                                    <svg class="no-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm8.036-4.024a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042L10.939 12l-2.963 2.963a.749.749 0 0 0 .326 1.275.749.749 0 0 0 .734-.215L12 13.06l2.963 2.964a.75.75 0 0 0 1.061-1.06L13.061 12l2.963-2.964a.749.749 0 0 0-.326-1.275.749.749 0 0 0-.734.215L12 10.939Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%else%}
+                                                    <svg class="unknown-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M10.97 8.265a1.45 1.45 0 0 0-.487.57.75.75 0 0 1-1.341-.67c.2-.402.513-.826.997-1.148C10.627 6.69 11.244 6.5 12 6.5c.658 0 1.369.195 1.934.619a2.45 2.45 0 0 1 1.004 2.006c0 1.033-.513 1.72-1.027 2.215-.19.183-.399.358-.579.508l-.147.123a4.329 4.329 0 0 0-.435.409v1.37a.75.75 0 1 1-1.5 0v-1.473c0-.237.067-.504.247-.736.22-.28.486-.517.718-.714l.183-.153.001-.001c.172-.143.324-.27.47-.412.368-.355.569-.676.569-1.136a.953.953 0 0 0-.404-.806C12.766 8.118 12.384 8 12 8c-.494 0-.814.121-1.03.265ZM13 17a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z">
+                                                        </path>
+                                                        <path
+                                                            d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1ZM2.5 12a9.5 9.5 0 0 0 9.5 9.5 9.5 9.5 0 0 0 9.5-9.5A9.5 9.5 0 0 0 12 2.5 9.5 9.5 0 0 0 2.5 12Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%endif%}
+                                                </span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="col border p-4 mx-2 ">
+                                        <h6 class="text-center">Safety and Security</h6>
+                                        <ul class="list-group list-group-flush mt-4">
+                                            <li
+                                                class="list-group-item d-flex justify-content-between align-items-center">
+                                                <span>CCTV</span>
+                                                <span>
+                                                    {% if school.facilities.all.first.CCTV == 'Y' %}
+                                                    <svg class="yes-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm16.28-2.72a.751.751 0 0 0-.018-1.042.751.751 0 0 0-1.042-.018l-5.97 5.97-2.47-2.47a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042l3 3a.75.75 0 0 0 1.06 0Z">
+                                                        </path>
+                                                    </svg>
+                                                    {% elif school.facilities.all.first.CCTV == 'N' %}
+                                                    <svg class="no-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm8.036-4.024a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042L10.939 12l-2.963 2.963a.749.749 0 0 0 .326 1.275.749.749 0 0 0 .734-.215L12 13.06l2.963 2.964a.75.75 0 0 0 1.061-1.06L13.061 12l2.963-2.964a.749.749 0 0 0-.326-1.275.749.749 0 0 0-.734.215L12 10.939Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%else%}
+                                                    <svg class="unknown-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M10.97 8.265a1.45 1.45 0 0 0-.487.57.75.75 0 0 1-1.341-.67c.2-.402.513-.826.997-1.148C10.627 6.69 11.244 6.5 12 6.5c.658 0 1.369.195 1.934.619a2.45 2.45 0 0 1 1.004 2.006c0 1.033-.513 1.72-1.027 2.215-.19.183-.399.358-.579.508l-.147.123a4.329 4.329 0 0 0-.435.409v1.37a.75.75 0 1 1-1.5 0v-1.473c0-.237.067-.504.247-.736.22-.28.486-.517.718-.714l.183-.153.001-.001c.172-.143.324-.27.47-.412.368-.355.569-.676.569-1.136a.953.953 0 0 0-.404-.806C12.766 8.118 12.384 8 12 8c-.494 0-.814.121-1.03.265ZM13 17a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z">
+                                                        </path>
+                                                        <path
+                                                            d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1ZM2.5 12a9.5 9.5 0 0 0 9.5 9.5 9.5 9.5 0 0 0 9.5-9.5A9.5 9.5 0 0 0 12 2.5 9.5 9.5 0 0 0 2.5 12Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%endif%}
+                                                </span>
+                                            </li>
+                                            <li
+                                                class="list-group-item d-flex justify-content-between align-items-center">
+                                                <span>GPS
+                                                    Bus Tracking App</span>
+                                                <span>
+                                                    {% if school.facilities.all.first.GPS_Bus_Tracking_App == 'Y' %}
+                                                    <svg class="yes-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm16.28-2.72a.751.751 0 0 0-.018-1.042.751.751 0 0 0-1.042-.018l-5.97 5.97-2.47-2.47a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042l3 3a.75.75 0 0 0 1.06 0Z">
+                                                        </path>
+                                                    </svg>
+                                                    {% elif school.facilities.all.first.GPS_Bus_Tracking_App == 'N' %}
+                                                    <svg class="no-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm8.036-4.024a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042L10.939 12l-2.963 2.963a.749.749 0 0 0 .326 1.275.749.749 0 0 0 .734-.215L12 13.06l2.963 2.964a.75.75 0 0 0 1.061-1.06L13.061 12l2.963-2.964a.749.749 0 0 0-.326-1.275.749.749 0 0 0-.734.215L12 10.939Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%else%}
+                                                    <svg class="unknown-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M10.97 8.265a1.45 1.45 0 0 0-.487.57.75.75 0 0 1-1.341-.67c.2-.402.513-.826.997-1.148C10.627 6.69 11.244 6.5 12 6.5c.658 0 1.369.195 1.934.619a2.45 2.45 0 0 1 1.004 2.006c0 1.033-.513 1.72-1.027 2.215-.19.183-.399.358-.579.508l-.147.123a4.329 4.329 0 0 0-.435.409v1.37a.75.75 0 1 1-1.5 0v-1.473c0-.237.067-.504.247-.736.22-.28.486-.517.718-.714l.183-.153.001-.001c.172-.143.324-.27.47-.412.368-.355.569-.676.569-1.136a.953.953 0 0 0-.404-.806C12.766 8.118 12.384 8 12 8c-.494 0-.814.121-1.03.265ZM13 17a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z">
+                                                        </path>
+                                                        <path
+                                                            d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1ZM2.5 12a9.5 9.5 0 0 0 9.5 9.5 9.5 9.5 0 0 0 9.5-9.5A9.5 9.5 0 0 0 12 2.5 9.5 9.5 0 0 0 2.5 12Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%endif%}
+                                                </span>
+                                            </li>
+                                            <li
+                                                class="list-group-item d-flex justify-content-between align-items-center">
+                                                <span>Student Tracking App</span>
+                                                <span>
+                                                    {% if school.facilities.all.first.Student_Tracking_App == 'Y' %}
+                                                    <svg class="yes-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm16.28-2.72a.751.751 0 0 0-.018-1.042.751.751 0 0 0-1.042-.018l-5.97 5.97-2.47-2.47a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042l3 3a.75.75 0 0 0 1.06 0Z">
+                                                        </path>
+                                                    </svg>
+                                                    {% elif school.facilities.all.first.Student_Tracking_App == 'N' %}
+                                                    <svg class="no-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm8.036-4.024a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042L10.939 12l-2.963 2.963a.749.749 0 0 0 .326 1.275.749.749 0 0 0 .734-.215L12 13.06l2.963 2.964a.75.75 0 0 0 1.061-1.06L13.061 12l2.963-2.964a.749.749 0 0 0-.326-1.275.749.749 0 0 0-.734.215L12 10.939Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%else%}
+                                                    <svg class="unknown-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M10.97 8.265a1.45 1.45 0 0 0-.487.57.75.75 0 0 1-1.341-.67c.2-.402.513-.826.997-1.148C10.627 6.69 11.244 6.5 12 6.5c.658 0 1.369.195 1.934.619a2.45 2.45 0 0 1 1.004 2.006c0 1.033-.513 1.72-1.027 2.215-.19.183-.399.358-.579.508l-.147.123a4.329 4.329 0 0 0-.435.409v1.37a.75.75 0 1 1-1.5 0v-1.473c0-.237.067-.504.247-.736.22-.28.486-.517.718-.714l.183-.153.001-.001c.172-.143.324-.27.47-.412.368-.355.569-.676.569-1.136a.953.953 0 0 0-.404-.806C12.766 8.118 12.384 8 12 8c-.494 0-.814.121-1.03.265ZM13 17a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z">
+                                                        </path>
+                                                        <path
+                                                            d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1ZM2.5 12a9.5 9.5 0 0 0 9.5 9.5 9.5 9.5 0 0 0 9.5-9.5A9.5 9.5 0 0 0 12 2.5 9.5 9.5 0 0 0 2.5 12Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%endif%}
+                                                </span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="col border p-4 mx-2 ">
+                                        <h6 class="text-center">Disabled Friendly</h6>
+                                        <ul class="list-group list-group-flush mt-4">
+                                            <li
+                                                class="list-group-item d-flex justify-content-between align-items-center">
+                                                <span>Ramps</span>
+                                                <span>
+                                                    {% if school.facilities.all.first.Ramps == 'Y' %}
+                                                    <svg class="yes-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm16.28-2.72a.751.751 0 0 0-.018-1.042.751.751 0 0 0-1.042-.018l-5.97 5.97-2.47-2.47a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042l3 3a.75.75 0 0 0 1.06 0Z">
+                                                        </path>
+                                                    </svg>
+                                                    {% elif school.facilities.all.first.Ramps == 'N' %}
+                                                    <svg class="no-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm8.036-4.024a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042L10.939 12l-2.963 2.963a.749.749 0 0 0 .326 1.275.749.749 0 0 0 .734-.215L12 13.06l2.963 2.964a.75.75 0 0 0 1.061-1.06L13.061 12l2.963-2.964a.749.749 0 0 0-.326-1.275.749.749 0 0 0-.734.215L12 10.939Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%else%}
+                                                    <svg class="unknown-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M10.97 8.265a1.45 1.45 0 0 0-.487.57.75.75 0 0 1-1.341-.67c.2-.402.513-.826.997-1.148C10.627 6.69 11.244 6.5 12 6.5c.658 0 1.369.195 1.934.619a2.45 2.45 0 0 1 1.004 2.006c0 1.033-.513 1.72-1.027 2.215-.19.183-.399.358-.579.508l-.147.123a4.329 4.329 0 0 0-.435.409v1.37a.75.75 0 1 1-1.5 0v-1.473c0-.237.067-.504.247-.736.22-.28.486-.517.718-.714l.183-.153.001-.001c.172-.143.324-.27.47-.412.368-.355.569-.676.569-1.136a.953.953 0 0 0-.404-.806C12.766 8.118 12.384 8 12 8c-.494 0-.814.121-1.03.265ZM13 17a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z">
+                                                        </path>
+                                                        <path
+                                                            d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1ZM2.5 12a9.5 9.5 0 0 0 9.5 9.5 9.5 9.5 0 0 0 9.5-9.5A9.5 9.5 0 0 0 12 2.5 9.5 9.5 0 0 0 2.5 12Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%endif%}
+                                                </span>
+                                            </li>
+                                            <li
+                                                class="list-group-item d-flex justify-content-between align-items-center">
+                                                <span>Washrooms</span>
+                                                <span>
+                                                    {% if school.facilities.all.first.Washrooms == 'Y' %}
+                                                    <svg class="yes-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm16.28-2.72a.751.751 0 0 0-.018-1.042.751.751 0 0 0-1.042-.018l-5.97 5.97-2.47-2.47a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042l3 3a.75.75 0 0 0 1.06 0Z">
+                                                        </path>
+                                                    </svg>
+                                                    {% elif school.facilities.all.first.Washrooms == 'N' %}
+                                                    <svg class="no-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm8.036-4.024a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042L10.939 12l-2.963 2.963a.749.749 0 0 0 .326 1.275.749.749 0 0 0 .734-.215L12 13.06l2.963 2.964a.75.75 0 0 0 1.061-1.06L13.061 12l2.963-2.964a.749.749 0 0 0-.326-1.275.749.749 0 0 0-.734.215L12 10.939Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%else%}
+                                                    <svg class="unknown-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M10.97 8.265a1.45 1.45 0 0 0-.487.57.75.75 0 0 1-1.341-.67c.2-.402.513-.826.997-1.148C10.627 6.69 11.244 6.5 12 6.5c.658 0 1.369.195 1.934.619a2.45 2.45 0 0 1 1.004 2.006c0 1.033-.513 1.72-1.027 2.215-.19.183-.399.358-.579.508l-.147.123a4.329 4.329 0 0 0-.435.409v1.37a.75.75 0 1 1-1.5 0v-1.473c0-.237.067-.504.247-.736.22-.28.486-.517.718-.714l.183-.153.001-.001c.172-.143.324-.27.47-.412.368-.355.569-.676.569-1.136a.953.953 0 0 0-.404-.806C12.766 8.118 12.384 8 12 8c-.494 0-.814.121-1.03.265ZM13 17a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z">
+                                                        </path>
+                                                        <path
+                                                            d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1ZM2.5 12a9.5 9.5 0 0 0 9.5 9.5 9.5 9.5 0 0 0 9.5-9.5A9.5 9.5 0 0 0 12 2.5 9.5 9.5 0 0 0 2.5 12Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%endif%}
+                                                </span>
+                                            </li>
+                                            <li
+                                                class="list-group-item d-flex justify-content-between align-items-center">
+                                                <span>Elevators</span>
+                                                <span>
+                                                    {% if school.facilities.all.first.Elevators == 'Y' %}
+                                                    <svg class="yes-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm16.28-2.72a.751.751 0 0 0-.018-1.042.751.751 0 0 0-1.042-.018l-5.97 5.97-2.47-2.47a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042l3 3a.75.75 0 0 0 1.06 0Z">
+                                                        </path>
+                                                    </svg>
+                                                    {% elif school.facilities.all.first.Elevators == 'N' %}
+                                                    <svg class="no-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm8.036-4.024a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042L10.939 12l-2.963 2.963a.749.749 0 0 0 .326 1.275.749.749 0 0 0 .734-.215L12 13.06l2.963 2.964a.75.75 0 0 0 1.061-1.06L13.061 12l2.963-2.964a.749.749 0 0 0-.326-1.275.749.749 0 0 0-.734.215L12 10.939Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%else%}
+                                                    <svg class="unknown-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M10.97 8.265a1.45 1.45 0 0 0-.487.57.75.75 0 0 1-1.341-.67c.2-.402.513-.826.997-1.148C10.627 6.69 11.244 6.5 12 6.5c.658 0 1.369.195 1.934.619a2.45 2.45 0 0 1 1.004 2.006c0 1.033-.513 1.72-1.027 2.215-.19.183-.399.358-.579.508l-.147.123a4.329 4.329 0 0 0-.435.409v1.37a.75.75 0 1 1-1.5 0v-1.473c0-.237.067-.504.247-.736.22-.28.486-.517.718-.714l.183-.153.001-.001c.172-.143.324-.27.47-.412.368-.355.569-.676.569-1.136a.953.953 0 0 0-.404-.806C12.766 8.118 12.384 8 12 8c-.494 0-.814.121-1.03.265ZM13 17a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z">
+                                                        </path>
+                                                        <path
+                                                            d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1ZM2.5 12a9.5 9.5 0 0 0 9.5 9.5 9.5 9.5 0 0 0 9.5-9.5A9.5 9.5 0 0 0 12 2.5 9.5 9.5 0 0 0 2.5 12Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%endif%}
+                                                </span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col border p-4 mx-2 ">
+                                        <h6 class="text-center">Advanced Facilities</h6>
+                                        <ul class="list-group list-group-flush mt-4">
+                                            <li
+                                                class="list-group-item d-flex justify-content-between align-items-center">
+                                                <span>Alumni Association </span>
+                                                <span>
+                                                    {% if school.facilities.all.first.Alumni_Association == 'Y' %}
+                                                    <svg class="yes-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm16.28-2.72a.751.751 0 0 0-.018-1.042.751.751 0 0 0-1.042-.018l-5.97 5.97-2.47-2.47a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042l3 3a.75.75 0 0 0 1.06 0Z">
+                                                        </path>
+                                                    </svg>
+                                                    {% elif school.facilities.all.first.Alumni_Association == 'N' %}
+                                                    <svg class="no-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm8.036-4.024a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042L10.939 12l-2.963 2.963a.749.749 0 0 0 .326 1.275.749.749 0 0 0 .734-.215L12 13.06l2.963 2.964a.75.75 0 0 0 1.061-1.06L13.061 12l2.963-2.964a.749.749 0 0 0-.326-1.275.749.749 0 0 0-.734.215L12 10.939Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%else%}
+                                                    <svg class="unknown-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M10.97 8.265a1.45 1.45 0 0 0-.487.57.75.75 0 0 1-1.341-.67c.2-.402.513-.826.997-1.148C10.627 6.69 11.244 6.5 12 6.5c.658 0 1.369.195 1.934.619a2.45 2.45 0 0 1 1.004 2.006c0 1.033-.513 1.72-1.027 2.215-.19.183-.399.358-.579.508l-.147.123a4.329 4.329 0 0 0-.435.409v1.37a.75.75 0 1 1-1.5 0v-1.473c0-.237.067-.504.247-.736.22-.28.486-.517.718-.714l.183-.153.001-.001c.172-.143.324-.27.47-.412.368-.355.569-.676.569-1.136a.953.953 0 0 0-.404-.806C12.766 8.118 12.384 8 12 8c-.494 0-.814.121-1.03.265ZM13 17a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z">
+                                                        </path>
+                                                        <path
+                                                            d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1ZM2.5 12a9.5 9.5 0 0 0 9.5 9.5 9.5 9.5 0 0 0 9.5-9.5A9.5 9.5 0 0 0 12 2.5 9.5 9.5 0 0 0 2.5 12Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%endif%}
+                                                </span>
+                                            </li>
+                                            <li
+                                                class="list-group-item d-flex justify-content-between align-items-center">
+                                                <span>Medical Room</span>
+                                                <span>
+                                                    {% if school.facilities.all.first.Medical_Room == 'Y' %}
+                                                    <svg class="yes-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm16.28-2.72a.751.751 0 0 0-.018-1.042.751.751 0 0 0-1.042-.018l-5.97 5.97-2.47-2.47a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042l3 3a.75.75 0 0 0 1.06 0Z">
+                                                        </path>
+                                                    </svg>
+                                                    {% elif school.facilities.all.first.Medical_Room == 'N' %}
+                                                    <svg class="no-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm8.036-4.024a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042L10.939 12l-2.963 2.963a.749.749 0 0 0 .326 1.275.749.749 0 0 0 .734-.215L12 13.06l2.963 2.964a.75.75 0 0 0 1.061-1.06L13.061 12l2.963-2.964a.749.749 0 0 0-.326-1.275.749.749 0 0 0-.734.215L12 10.939Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%else%}
+                                                    <svg class="unknown-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M10.97 8.265a1.45 1.45 0 0 0-.487.57.75.75 0 0 1-1.341-.67c.2-.402.513-.826.997-1.148C10.627 6.69 11.244 6.5 12 6.5c.658 0 1.369.195 1.934.619a2.45 2.45 0 0 1 1.004 2.006c0 1.033-.513 1.72-1.027 2.215-.19.183-.399.358-.579.508l-.147.123a4.329 4.329 0 0 0-.435.409v1.37a.75.75 0 1 1-1.5 0v-1.473c0-.237.067-.504.247-.736.22-.28.486-.517.718-.714l.183-.153.001-.001c.172-.143.324-.27.47-.412.368-.355.569-.676.569-1.136a.953.953 0 0 0-.404-.806C12.766 8.118 12.384 8 12 8c-.494 0-.814.121-1.03.265ZM13 17a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z">
+                                                        </path>
+                                                        <path
+                                                            d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1ZM2.5 12a9.5 9.5 0 0 0 9.5 9.5 9.5 9.5 0 0 0 9.5-9.5A9.5 9.5 0 0 0 12 2.5 9.5 9.5 0 0 0 2.5 12Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%endif%}
+                                                </span>
+                                            </li>
+                                            <li
+                                                class="list-group-item d-flex justify-content-between align-items-center">
+                                                <span>Day
+                                                    care</span>
+                                                <span>
+                                                    {% if school.facilities.all.first.Day_care == 'Y' %}
+                                                    <svg class="yes-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm16.28-2.72a.751.751 0 0 0-.018-1.042.751.751 0 0 0-1.042-.018l-5.97 5.97-2.47-2.47a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042l3 3a.75.75 0 0 0 1.06 0Z">
+                                                        </path>
+                                                    </svg>
+                                                    {% elif school.facilities.all.first.Day_care == 'N' %}
+                                                    <svg class="no-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm8.036-4.024a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042L10.939 12l-2.963 2.963a.749.749 0 0 0 .326 1.275.749.749 0 0 0 .734-.215L12 13.06l2.963 2.964a.75.75 0 0 0 1.061-1.06L13.061 12l2.963-2.964a.749.749 0 0 0-.326-1.275.749.749 0 0 0-.734.215L12 10.939Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%else%}
+                                                    <svg class="unknown-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M10.97 8.265a1.45 1.45 0 0 0-.487.57.75.75 0 0 1-1.341-.67c.2-.402.513-.826.997-1.148C10.627 6.69 11.244 6.5 12 6.5c.658 0 1.369.195 1.934.619a2.45 2.45 0 0 1 1.004 2.006c0 1.033-.513 1.72-1.027 2.215-.19.183-.399.358-.579.508l-.147.123a4.329 4.329 0 0 0-.435.409v1.37a.75.75 0 1 1-1.5 0v-1.473c0-.237.067-.504.247-.736.22-.28.486-.517.718-.714l.183-.153.001-.001c.172-.143.324-.27.47-.412.368-.355.569-.676.569-1.136a.953.953 0 0 0-.404-.806C12.766 8.118 12.384 8 12 8c-.494 0-.814.121-1.03.265ZM13 17a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z">
+                                                        </path>
+                                                        <path
+                                                            d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1ZM2.5 12a9.5 9.5 0 0 0 9.5 9.5 9.5 9.5 0 0 0 9.5-9.5A9.5 9.5 0 0 0 12 2.5 9.5 9.5 0 0 0 2.5 12Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%endif%}
+                                                </span>
+                                            </li>
+                                            <li
+                                                class="list-group-item d-flex justify-content-between align-items-center">
+                                                <span>Meals</span>
+                                                <span>
+                                                    {% if school.facilities.all.first.Meals == 'Y' %}
+                                                    <svg class="yes-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm16.28-2.72a.751.751 0 0 0-.018-1.042.751.751 0 0 0-1.042-.018l-5.97 5.97-2.47-2.47a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042l3 3a.75.75 0 0 0 1.06 0Z">
+                                                        </path>
+                                                    </svg>
+                                                    {% elif school.facilities.all.first.Meals == 'N' %}
+                                                    <svg class="no-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm8.036-4.024a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042L10.939 12l-2.963 2.963a.749.749 0 0 0 .326 1.275.749.749 0 0 0 .734-.215L12 13.06l2.963 2.964a.75.75 0 0 0 1.061-1.06L13.061 12l2.963-2.964a.749.749 0 0 0-.326-1.275.749.749 0 0 0-.734.215L12 10.939Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%else%}
+                                                    <svg class="unknown-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M10.97 8.265a1.45 1.45 0 0 0-.487.57.75.75 0 0 1-1.341-.67c.2-.402.513-.826.997-1.148C10.627 6.69 11.244 6.5 12 6.5c.658 0 1.369.195 1.934.619a2.45 2.45 0 0 1 1.004 2.006c0 1.033-.513 1.72-1.027 2.215-.19.183-.399.358-.579.508l-.147.123a4.329 4.329 0 0 0-.435.409v1.37a.75.75 0 1 1-1.5 0v-1.473c0-.237.067-.504.247-.736.22-.28.486-.517.718-.714l.183-.153.001-.001c.172-.143.324-.27.47-.412.368-.355.569-.676.569-1.136a.953.953 0 0 0-.404-.806C12.766 8.118 12.384 8 12 8c-.494 0-.814.121-1.03.265ZM13 17a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z">
+                                                        </path>
+                                                        <path
+                                                            d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1ZM2.5 12a9.5 9.5 0 0 0 9.5 9.5 9.5 9.5 0 0 0 9.5-9.5A9.5 9.5 0 0 0 12 2.5 9.5 9.5 0 0 0 2.5 12Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%endif%}
+                                                </span>
+                                            </li>
+                                            <li
+                                                class="list-group-item d-flex justify-content-between align-items-center">
+                                                <span>Transportation</span>
+                                                <span>
+                                                    {% if school.facilities.all.first.Transportation == 'Y' %}
+                                                    <svg class="yes-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm16.28-2.72a.751.751 0 0 0-.018-1.042.751.751 0 0 0-1.042-.018l-5.97 5.97-2.47-2.47a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042l3 3a.75.75 0 0 0 1.06 0Z">
+                                                        </path>
+                                                    </svg>
+                                                    {% elif school.facilities.all.first.Transportation == 'N' %}
+                                                    <svg class="no-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm8.036-4.024a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042L10.939 12l-2.963 2.963a.749.749 0 0 0 .326 1.275.749.749 0 0 0 .734-.215L12 13.06l2.963 2.964a.75.75 0 0 0 1.061-1.06L13.061 12l2.963-2.964a.749.749 0 0 0-.326-1.275.749.749 0 0 0-.734.215L12 10.939Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%else%}
+                                                    <svg class="unknown-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M10.97 8.265a1.45 1.45 0 0 0-.487.57.75.75 0 0 1-1.341-.67c.2-.402.513-.826.997-1.148C10.627 6.69 11.244 6.5 12 6.5c.658 0 1.369.195 1.934.619a2.45 2.45 0 0 1 1.004 2.006c0 1.033-.513 1.72-1.027 2.215-.19.183-.399.358-.579.508l-.147.123a4.329 4.329 0 0 0-.435.409v1.37a.75.75 0 1 1-1.5 0v-1.473c0-.237.067-.504.247-.736.22-.28.486-.517.718-.714l.183-.153.001-.001c.172-.143.324-.27.47-.412.368-.355.569-.676.569-1.136a.953.953 0 0 0-.404-.806C12.766 8.118 12.384 8 12 8c-.494 0-.814.121-1.03.265ZM13 17a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z">
+                                                        </path>
+                                                        <path
+                                                            d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1ZM2.5 12a9.5 9.5 0 0 0 9.5 9.5 9.5 9.5 0 0 0 9.5-9.5A9.5 9.5 0 0 0 12 2.5 9.5 9.5 0 0 0 2.5 12Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%endif%}
+                                                </span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="col border p-4 mx-2 ">
+                                        <h6 class="text-center">Extra Curricular</h6>
+                                        <ul class="list-group list-group-flush mt-4">
+                                            <li
+                                                class="list-group-item d-flex justify-content-between align-items-center">
+                                                <span>Art
+                                                    and Craft</span>
+                                                <span>
+                                                    {% if school.facilities.all.first.Art_and_Craft == 'Y' %}
+                                                    <svg class="yes-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm16.28-2.72a.751.751 0 0 0-.018-1.042.751.751 0 0 0-1.042-.018l-5.97 5.97-2.47-2.47a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042l3 3a.75.75 0 0 0 1.06 0Z">
+                                                        </path>
+                                                    </svg>
+                                                    {% elif school.facilities.all.first.Art_and_Craft == 'N' %}
+                                                    <svg class="no-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm8.036-4.024a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042L10.939 12l-2.963 2.963a.749.749 0 0 0 .326 1.275.749.749 0 0 0 .734-.215L12 13.06l2.963 2.964a.75.75 0 0 0 1.061-1.06L13.061 12l2.963-2.964a.749.749 0 0 0-.326-1.275.749.749 0 0 0-.734.215L12 10.939Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%else%}
+                                                    <svg class="unknown-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M10.97 8.265a1.45 1.45 0 0 0-.487.57.75.75 0 0 1-1.341-.67c.2-.402.513-.826.997-1.148C10.627 6.69 11.244 6.5 12 6.5c.658 0 1.369.195 1.934.619a2.45 2.45 0 0 1 1.004 2.006c0 1.033-.513 1.72-1.027 2.215-.19.183-.399.358-.579.508l-.147.123a4.329 4.329 0 0 0-.435.409v1.37a.75.75 0 1 1-1.5 0v-1.473c0-.237.067-.504.247-.736.22-.28.486-.517.718-.714l.183-.153.001-.001c.172-.143.324-.27.47-.412.368-.355.569-.676.569-1.136a.953.953 0 0 0-.404-.806C12.766 8.118 12.384 8 12 8c-.494 0-.814.121-1.03.265ZM13 17a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z">
+                                                        </path>
+                                                        <path
+                                                            d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1ZM2.5 12a9.5 9.5 0 0 0 9.5 9.5 9.5 9.5 0 0 0 9.5-9.5A9.5 9.5 0 0 0 12 2.5 9.5 9.5 0 0 0 2.5 12Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%endif%}
+                                                </span>
+                                            </li>
+                                            <li
+                                                class="list-group-item d-flex justify-content-between align-items-center">
+                                                <span>Dance</span>
+                                                <span>
+                                                    {% if school.facilities.all.first.Dance == 'Y' %}
+                                                    <svg class="yes-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm16.28-2.72a.751.751 0 0 0-.018-1.042.751.751 0 0 0-1.042-.018l-5.97 5.97-2.47-2.47a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042l3 3a.75.75 0 0 0 1.06 0Z">
+                                                        </path>
+                                                    </svg>
+                                                    {% elif school.facilities.all.first.Dance == 'N' %}
+                                                    <svg class="no-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm8.036-4.024a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042L10.939 12l-2.963 2.963a.749.749 0 0 0 .326 1.275.749.749 0 0 0 .734-.215L12 13.06l2.963 2.964a.75.75 0 0 0 1.061-1.06L13.061 12l2.963-2.964a.749.749 0 0 0-.326-1.275.749.749 0 0 0-.734.215L12 10.939Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%else%}
+                                                    <svg class="unknown-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M10.97 8.265a1.45 1.45 0 0 0-.487.57.75.75 0 0 1-1.341-.67c.2-.402.513-.826.997-1.148C10.627 6.69 11.244 6.5 12 6.5c.658 0 1.369.195 1.934.619a2.45 2.45 0 0 1 1.004 2.006c0 1.033-.513 1.72-1.027 2.215-.19.183-.399.358-.579.508l-.147.123a4.329 4.329 0 0 0-.435.409v1.37a.75.75 0 1 1-1.5 0v-1.473c0-.237.067-.504.247-.736.22-.28.486-.517.718-.714l.183-.153.001-.001c.172-.143.324-.27.47-.412.368-.355.569-.676.569-1.136a.953.953 0 0 0-.404-.806C12.766 8.118 12.384 8 12 8c-.494 0-.814.121-1.03.265ZM13 17a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z">
+                                                        </path>
+                                                        <path
+                                                            d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1ZM2.5 12a9.5 9.5 0 0 0 9.5 9.5 9.5 9.5 0 0 0 9.5-9.5A9.5 9.5 0 0 0 12 2.5 9.5 9.5 0 0 0 2.5 12Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%endif%}
+                                                </span>
+                                            </li>
+                                            <li
+                                                class="list-group-item d-flex justify-content-between align-items-center">
+                                                <span>Drama</span>
+                                                <span>
+                                                    {% if school.facilities.all.first.Drama == 'Y' %}
+                                                    <svg class="yes-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm16.28-2.72a.751.751 0 0 0-.018-1.042.751.751 0 0 0-1.042-.018l-5.97 5.97-2.47-2.47a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042l3 3a.75.75 0 0 0 1.06 0Z">
+                                                        </path>
+                                                    </svg>
+                                                    {% elif school.facilities.all.first.Drama == 'N' %}
+                                                    <svg class="no-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm8.036-4.024a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042L10.939 12l-2.963 2.963a.749.749 0 0 0 .326 1.275.749.749 0 0 0 .734-.215L12 13.06l2.963 2.964a.75.75 0 0 0 1.061-1.06L13.061 12l2.963-2.964a.749.749 0 0 0-.326-1.275.749.749 0 0 0-.734.215L12 10.939Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%else%}
+                                                    <svg class="unknown-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M10.97 8.265a1.45 1.45 0 0 0-.487.57.75.75 0 0 1-1.341-.67c.2-.402.513-.826.997-1.148C10.627 6.69 11.244 6.5 12 6.5c.658 0 1.369.195 1.934.619a2.45 2.45 0 0 1 1.004 2.006c0 1.033-.513 1.72-1.027 2.215-.19.183-.399.358-.579.508l-.147.123a4.329 4.329 0 0 0-.435.409v1.37a.75.75 0 1 1-1.5 0v-1.473c0-.237.067-.504.247-.736.22-.28.486-.517.718-.714l.183-.153.001-.001c.172-.143.324-.27.47-.412.368-.355.569-.676.569-1.136a.953.953 0 0 0-.404-.806C12.766 8.118 12.384 8 12 8c-.494 0-.814.121-1.03.265ZM13 17a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z">
+                                                        </path>
+                                                        <path
+                                                            d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1ZM2.5 12a9.5 9.5 0 0 0 9.5 9.5 9.5 9.5 0 0 0 9.5-9.5A9.5 9.5 0 0 0 12 2.5 9.5 9.5 0 0 0 2.5 12Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%endif%}
+                                                </span>
+                                            </li>
+                                            <li
+                                                class="list-group-item d-flex justify-content-between align-items-center">
+                                                <span>Music</span>
+                                                <span>
+                                                    {% if school.facilities.all.first.Music == 'Y' %}
+                                                    <svg class="yes-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm16.28-2.72a.751.751 0 0 0-.018-1.042.751.751 0 0 0-1.042-.018l-5.97 5.97-2.47-2.47a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042l3 3a.75.75 0 0 0 1.06 0Z">
+                                                        </path>
+                                                    </svg>
+                                                    {% elif school.facilities.all.first.Music == 'N' %}
+                                                    <svg class="no-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm8.036-4.024a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042L10.939 12l-2.963 2.963a.749.749 0 0 0 .326 1.275.749.749 0 0 0 .734-.215L12 13.06l2.963 2.964a.75.75 0 0 0 1.061-1.06L13.061 12l2.963-2.964a.749.749 0 0 0-.326-1.275.749.749 0 0 0-.734.215L12 10.939Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%else%}
+                                                    <svg class="unknown-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M10.97 8.265a1.45 1.45 0 0 0-.487.57.75.75 0 0 1-1.341-.67c.2-.402.513-.826.997-1.148C10.627 6.69 11.244 6.5 12 6.5c.658 0 1.369.195 1.934.619a2.45 2.45 0 0 1 1.004 2.006c0 1.033-.513 1.72-1.027 2.215-.19.183-.399.358-.579.508l-.147.123a4.329 4.329 0 0 0-.435.409v1.37a.75.75 0 1 1-1.5 0v-1.473c0-.237.067-.504.247-.736.22-.28.486-.517.718-.714l.183-.153.001-.001c.172-.143.324-.27.47-.412.368-.355.569-.676.569-1.136a.953.953 0 0 0-.404-.806C12.766 8.118 12.384 8 12 8c-.494 0-.814.121-1.03.265ZM13 17a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z">
+                                                        </path>
+                                                        <path
+                                                            d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1ZM2.5 12a9.5 9.5 0 0 0 9.5 9.5 9.5 9.5 0 0 0 9.5-9.5A9.5 9.5 0 0 0 12 2.5 9.5 9.5 0 0 0 2.5 12Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%endif%}
+                                                </span>
+                                            </li>
+                                            <li
+                                                class="list-group-item d-flex justify-content-between align-items-center">
+                                                <span>Picnics and excursion</span>
+                                                <span>
+                                                    {% if school.facilities.all.first.Picnics_and_excursion == 'Y' %}
+                                                    <svg class="yes-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm16.28-2.72a.751.751 0 0 0-.018-1.042.751.751 0 0 0-1.042-.018l-5.97 5.97-2.47-2.47a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042l3 3a.75.75 0 0 0 1.06 0Z">
+                                                        </path>
+                                                    </svg>
+                                                    {% elif school.facilities.all.first.Picnics_and_excursion == 'N' %}
+                                                    <svg class="no-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm8.036-4.024a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042L10.939 12l-2.963 2.963a.749.749 0 0 0 .326 1.275.749.749 0 0 0 .734-.215L12 13.06l2.963 2.964a.75.75 0 0 0 1.061-1.06L13.061 12l2.963-2.964a.749.749 0 0 0-.326-1.275.749.749 0 0 0-.734.215L12 10.939Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%else%}
+                                                    <svg class="unknown-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M10.97 8.265a1.45 1.45 0 0 0-.487.57.75.75 0 0 1-1.341-.67c.2-.402.513-.826.997-1.148C10.627 6.69 11.244 6.5 12 6.5c.658 0 1.369.195 1.934.619a2.45 2.45 0 0 1 1.004 2.006c0 1.033-.513 1.72-1.027 2.215-.19.183-.399.358-.579.508l-.147.123a4.329 4.329 0 0 0-.435.409v1.37a.75.75 0 1 1-1.5 0v-1.473c0-.237.067-.504.247-.736.22-.28.486-.517.718-.714l.183-.153.001-.001c.172-.143.324-.27.47-.412.368-.355.569-.676.569-1.136a.953.953 0 0 0-.404-.806C12.766 8.118 12.384 8 12 8c-.494 0-.814.121-1.03.265ZM13 17a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z">
+                                                        </path>
+                                                        <path
+                                                            d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1ZM2.5 12a9.5 9.5 0 0 0 9.5 9.5 9.5 9.5 0 0 0 9.5-9.5A9.5 9.5 0 0 0 12 2.5 9.5 9.5 0 0 0 2.5 12Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%endif%}
+                                                </span>
+                                            </li>
+                                            <li
+                                                class="list-group-item d-flex justify-content-between align-items-center">
+                                                <span>Debate</span>
+                                                <span>
+                                                    {% if school.facilities.all.first.Debate == 'Y' %}
+                                                    <svg class="yes-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm16.28-2.72a.751.751 0 0 0-.018-1.042.751.751 0 0 0-1.042-.018l-5.97 5.97-2.47-2.47a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042l3 3a.75.75 0 0 0 1.06 0Z">
+                                                        </path>
+                                                    </svg>
+                                                    {% elif school.facilities.all.first.Debate == 'N' %}
+                                                    <svg class="no-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm8.036-4.024a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042L10.939 12l-2.963 2.963a.749.749 0 0 0 .326 1.275.749.749 0 0 0 .734-.215L12 13.06l2.963 2.964a.75.75 0 0 0 1.061-1.06L13.061 12l2.963-2.964a.749.749 0 0 0-.326-1.275.749.749 0 0 0-.734.215L12 10.939Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%else%}
+                                                    <svg class="unknown-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M10.97 8.265a1.45 1.45 0 0 0-.487.57.75.75 0 0 1-1.341-.67c.2-.402.513-.826.997-1.148C10.627 6.69 11.244 6.5 12 6.5c.658 0 1.369.195 1.934.619a2.45 2.45 0 0 1 1.004 2.006c0 1.033-.513 1.72-1.027 2.215-.19.183-.399.358-.579.508l-.147.123a4.329 4.329 0 0 0-.435.409v1.37a.75.75 0 1 1-1.5 0v-1.473c0-.237.067-.504.247-.736.22-.28.486-.517.718-.714l.183-.153.001-.001c.172-.143.324-.27.47-.412.368-.355.569-.676.569-1.136a.953.953 0 0 0-.404-.806C12.766 8.118 12.384 8 12 8c-.494 0-.814.121-1.03.265ZM13 17a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z">
+                                                        </path>
+                                                        <path
+                                                            d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1ZM2.5 12a9.5 9.5 0 0 0 9.5 9.5 9.5 9.5 0 0 0 9.5-9.5A9.5 9.5 0 0 0 12 2.5 9.5 9.5 0 0 0 2.5 12Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%endif%}
+                                                </span>
+                                            </li>
+                                            <li
+                                                class="list-group-item d-flex justify-content-between align-items-center">
+                                                <span>Gardening</span>
+                                                <span>
+                                                    {% if school.facilities.all.first.Gardening == 'Y' %}
+                                                    <svg class="yes-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm16.28-2.72a.751.751 0 0 0-.018-1.042.751.751 0 0 0-1.042-.018l-5.97 5.97-2.47-2.47a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042l3 3a.75.75 0 0 0 1.06 0Z">
+                                                        </path>
+                                                    </svg>
+                                                    {% elif school.facilities.all.first.Gardening == 'N' %}
+                                                    <svg class="no-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm8.036-4.024a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042L10.939 12l-2.963 2.963a.749.749 0 0 0 .326 1.275.749.749 0 0 0 .734-.215L12 13.06l2.963 2.964a.75.75 0 0 0 1.061-1.06L13.061 12l2.963-2.964a.749.749 0 0 0-.326-1.275.749.749 0 0 0-.734.215L12 10.939Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%else%}
+                                                    <svg class="unknown-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M10.97 8.265a1.45 1.45 0 0 0-.487.57.75.75 0 0 1-1.341-.67c.2-.402.513-.826.997-1.148C10.627 6.69 11.244 6.5 12 6.5c.658 0 1.369.195 1.934.619a2.45 2.45 0 0 1 1.004 2.006c0 1.033-.513 1.72-1.027 2.215-.19.183-.399.358-.579.508l-.147.123a4.329 4.329 0 0 0-.435.409v1.37a.75.75 0 1 1-1.5 0v-1.473c0-.237.067-.504.247-.736.22-.28.486-.517.718-.714l.183-.153.001-.001c.172-.143.324-.27.47-.412.368-.355.569-.676.569-1.136a.953.953 0 0 0-.404-.806C12.766 8.118 12.384 8 12 8c-.494 0-.814.121-1.03.265ZM13 17a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z">
+                                                        </path>
+                                                        <path
+                                                            d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1ZM2.5 12a9.5 9.5 0 0 0 9.5 9.5 9.5 9.5 0 0 0 9.5-9.5A9.5 9.5 0 0 0 12 2.5 9.5 9.5 0 0 0 2.5 12Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%endif%}
+                                                </span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="col border p-4 mx-2 ">
+                                        <h6 class="text-center">Sports and Fitness</h6>
+                                        <ul class="list-group list-group-flush mt-4">
+                                            <li
+                                                class="list-group-item d-flex justify-content-between align-items-center">
+                                                <span>Indoor Sports</span>
+                                                <span>
+                                                    {% if school.facilities.all.first.Indoor_Sports == 'Y' %}
+                                                    <svg class="yes-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm16.28-2.72a.751.751 0 0 0-.018-1.042.751.751 0 0 0-1.042-.018l-5.97 5.97-2.47-2.47a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042l3 3a.75.75 0 0 0 1.06 0Z">
+                                                        </path>
+                                                    </svg>
+                                                    {% elif school.facilities.all.first.Indoor_Sports == 'N' %}
+                                                    <svg class="no-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm8.036-4.024a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042L10.939 12l-2.963 2.963a.749.749 0 0 0 .326 1.275.749.749 0 0 0 .734-.215L12 13.06l2.963 2.964a.75.75 0 0 0 1.061-1.06L13.061 12l2.963-2.964a.749.749 0 0 0-.326-1.275.749.749 0 0 0-.734.215L12 10.939Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%else%}
+                                                    <svg class="unknown-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M10.97 8.265a1.45 1.45 0 0 0-.487.57.75.75 0 0 1-1.341-.67c.2-.402.513-.826.997-1.148C10.627 6.69 11.244 6.5 12 6.5c.658 0 1.369.195 1.934.619a2.45 2.45 0 0 1 1.004 2.006c0 1.033-.513 1.72-1.027 2.215-.19.183-.399.358-.579.508l-.147.123a4.329 4.329 0 0 0-.435.409v1.37a.75.75 0 1 1-1.5 0v-1.473c0-.237.067-.504.247-.736.22-.28.486-.517.718-.714l.183-.153.001-.001c.172-.143.324-.27.47-.412.368-.355.569-.676.569-1.136a.953.953 0 0 0-.404-.806C12.766 8.118 12.384 8 12 8c-.494 0-.814.121-1.03.265ZM13 17a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z">
+                                                        </path>
+                                                        <path
+                                                            d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1ZM2.5 12a9.5 9.5 0 0 0 9.5 9.5 9.5 9.5 0 0 0 9.5-9.5A9.5 9.5 0 0 0 12 2.5 9.5 9.5 0 0 0 2.5 12Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%endif%}
+                                                </span>
+                                            </li>
+                                            <li
+                                                class="list-group-item d-flex justify-content-between align-items-center">
+                                                <span>Outdoor Sports</span>
+                                                <span>
+                                                    {% if school.facilities.all.first.Outdoor_Sports == 'Y' %}
+                                                    <svg class="yes-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm16.28-2.72a.751.751 0 0 0-.018-1.042.751.751 0 0 0-1.042-.018l-5.97 5.97-2.47-2.47a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042l3 3a.75.75 0 0 0 1.06 0Z">
+                                                        </path>
+                                                    </svg>
+                                                    {% elif school.facilities.all.first.Outdoor_Sports == 'N' %}
+                                                    <svg class="no-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm8.036-4.024a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042L10.939 12l-2.963 2.963a.749.749 0 0 0 .326 1.275.749.749 0 0 0 .734-.215L12 13.06l2.963 2.964a.75.75 0 0 0 1.061-1.06L13.061 12l2.963-2.964a.749.749 0 0 0-.326-1.275.749.749 0 0 0-.734.215L12 10.939Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%else%}
+                                                    <svg class="unknown-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M10.97 8.265a1.45 1.45 0 0 0-.487.57.75.75 0 0 1-1.341-.67c.2-.402.513-.826.997-1.148C10.627 6.69 11.244 6.5 12 6.5c.658 0 1.369.195 1.934.619a2.45 2.45 0 0 1 1.004 2.006c0 1.033-.513 1.72-1.027 2.215-.19.183-.399.358-.579.508l-.147.123a4.329 4.329 0 0 0-.435.409v1.37a.75.75 0 1 1-1.5 0v-1.473c0-.237.067-.504.247-.736.22-.28.486-.517.718-.714l.183-.153.001-.001c.172-.143.324-.27.47-.412.368-.355.569-.676.569-1.136a.953.953 0 0 0-.404-.806C12.766 8.118 12.384 8 12 8c-.494 0-.814.121-1.03.265ZM13 17a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z">
+                                                        </path>
+                                                        <path
+                                                            d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1ZM2.5 12a9.5 9.5 0 0 0 9.5 9.5 9.5 9.5 0 0 0 9.5-9.5A9.5 9.5 0 0 0 12 2.5 9.5 9.5 0 0 0 2.5 12Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%endif%}
+                                                </span>
+                                            </li>
+                                            <li
+                                                class="list-group-item d-flex justify-content-between align-items-center">
+                                                <span>Karate</span>
+                                                <span>
+                                                    {% if school.facilities.all.first.Karate == 'Y' %}
+                                                    <svg class="yes-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm16.28-2.72a.751.751 0 0 0-.018-1.042.751.751 0 0 0-1.042-.018l-5.97 5.97-2.47-2.47a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042l3 3a.75.75 0 0 0 1.06 0Z">
+                                                        </path>
+                                                    </svg>
+                                                    {% elif school.facilities.all.first.Karate == 'N' %}
+                                                    <svg class="no-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm8.036-4.024a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042L10.939 12l-2.963 2.963a.749.749 0 0 0 .326 1.275.749.749 0 0 0 .734-.215L12 13.06l2.963 2.964a.75.75 0 0 0 1.061-1.06L13.061 12l2.963-2.964a.749.749 0 0 0-.326-1.275.749.749 0 0 0-.734.215L12 10.939Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%else%}
+                                                    <svg class="unknown-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M10.97 8.265a1.45 1.45 0 0 0-.487.57.75.75 0 0 1-1.341-.67c.2-.402.513-.826.997-1.148C10.627 6.69 11.244 6.5 12 6.5c.658 0 1.369.195 1.934.619a2.45 2.45 0 0 1 1.004 2.006c0 1.033-.513 1.72-1.027 2.215-.19.183-.399.358-.579.508l-.147.123a4.329 4.329 0 0 0-.435.409v1.37a.75.75 0 1 1-1.5 0v-1.473c0-.237.067-.504.247-.736.22-.28.486-.517.718-.714l.183-.153.001-.001c.172-.143.324-.27.47-.412.368-.355.569-.676.569-1.136a.953.953 0 0 0-.404-.806C12.766 8.118 12.384 8 12 8c-.494 0-.814.121-1.03.265ZM13 17a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z">
+                                                        </path>
+                                                        <path
+                                                            d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1ZM2.5 12a9.5 9.5 0 0 0 9.5 9.5 9.5 9.5 0 0 0 9.5-9.5A9.5 9.5 0 0 0 12 2.5 9.5 9.5 0 0 0 2.5 12Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%endif%}
+                                                </span>
+                                            </li>
+                                            <li
+                                                class="list-group-item d-flex justify-content-between align-items-center">
+                                                <span>Taekwondo</span>
+                                                <span>
+                                                    {% if school.facilities.all.first.Taekwondo == 'Y' %}
+                                                    <svg class="yes-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm16.28-2.72a.751.751 0 0 0-.018-1.042.751.751 0 0 0-1.042-.018l-5.97 5.97-2.47-2.47a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042l3 3a.75.75 0 0 0 1.06 0Z">
+                                                        </path>
+                                                    </svg>
+                                                    {% elif school.facilities.all.first.Taekwondo == 'N' %}
+                                                    <svg class="no-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm8.036-4.024a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042L10.939 12l-2.963 2.963a.749.749 0 0 0 .326 1.275.749.749 0 0 0 .734-.215L12 13.06l2.963 2.964a.75.75 0 0 0 1.061-1.06L13.061 12l2.963-2.964a.749.749 0 0 0-.326-1.275.749.749 0 0 0-.734.215L12 10.939Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%else%}
+                                                    <svg class="unknown-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M10.97 8.265a1.45 1.45 0 0 0-.487.57.75.75 0 0 1-1.341-.67c.2-.402.513-.826.997-1.148C10.627 6.69 11.244 6.5 12 6.5c.658 0 1.369.195 1.934.619a2.45 2.45 0 0 1 1.004 2.006c0 1.033-.513 1.72-1.027 2.215-.19.183-.399.358-.579.508l-.147.123a4.329 4.329 0 0 0-.435.409v1.37a.75.75 0 1 1-1.5 0v-1.473c0-.237.067-.504.247-.736.22-.28.486-.517.718-.714l.183-.153.001-.001c.172-.143.324-.27.47-.412.368-.355.569-.676.569-1.136a.953.953 0 0 0-.404-.806C12.766 8.118 12.384 8 12 8c-.494 0-.814.121-1.03.265ZM13 17a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z">
+                                                        </path>
+                                                        <path
+                                                            d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1ZM2.5 12a9.5 9.5 0 0 0 9.5 9.5 9.5 9.5 0 0 0 9.5-9.5A9.5 9.5 0 0 0 12 2.5 9.5 9.5 0 0 0 2.5 12Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%endif%}
+                                                </span>
+                                            </li>
+                                            <li
+                                                class="list-group-item d-flex justify-content-between align-items-center">
+                                                <span>Yoga</span>
+                                                <span>
+                                                    {% if school.facilities.all.first.Yoga == 'Y' %}
+                                                    <svg class="yes-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm16.28-2.72a.751.751 0 0 0-.018-1.042.751.751 0 0 0-1.042-.018l-5.97 5.97-2.47-2.47a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042l3 3a.75.75 0 0 0 1.06 0Z">
+                                                        </path>
+                                                    </svg>
+                                                    {% elif school.facilities.all.first.Yoga == 'N' %}
+                                                    <svg class="no-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm8.036-4.024a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042L10.939 12l-2.963 2.963a.749.749 0 0 0 .326 1.275.749.749 0 0 0 .734-.215L12 13.06l2.963 2.964a.75.75 0 0 0 1.061-1.06L13.061 12l2.963-2.964a.749.749 0 0 0-.326-1.275.749.749 0 0 0-.734.215L12 10.939Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%else%}
+                                                    <svg class="unknown-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M10.97 8.265a1.45 1.45 0 0 0-.487.57.75.75 0 0 1-1.341-.67c.2-.402.513-.826.997-1.148C10.627 6.69 11.244 6.5 12 6.5c.658 0 1.369.195 1.934.619a2.45 2.45 0 0 1 1.004 2.006c0 1.033-.513 1.72-1.027 2.215-.19.183-.399.358-.579.508l-.147.123a4.329 4.329 0 0 0-.435.409v1.37a.75.75 0 1 1-1.5 0v-1.473c0-.237.067-.504.247-.736.22-.28.486-.517.718-.714l.183-.153.001-.001c.172-.143.324-.27.47-.412.368-.355.569-.676.569-1.136a.953.953 0 0 0-.404-.806C12.766 8.118 12.384 8 12 8c-.494 0-.814.121-1.03.265ZM13 17a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z">
+                                                        </path>
+                                                        <path
+                                                            d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1ZM2.5 12a9.5 9.5 0 0 0 9.5 9.5 9.5 9.5 0 0 0 9.5-9.5A9.5 9.5 0 0 0 12 2.5 9.5 9.5 0 0 0 2.5 12Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%endif%}
+                                                </span>
+                                            </li>
+                                            <li
+                                                class="list-group-item d-flex justify-content-between align-items-center">
+                                                <span>Gym</span>
+                                                <span>
+                                                    {% if school.facilities.all.first.Gym == 'Y' %}
+                                                    <svg class="yes-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm16.28-2.72a.751.751 0 0 0-.018-1.042.751.751 0 0 0-1.042-.018l-5.97 5.97-2.47-2.47a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042l3 3a.75.75 0 0 0 1.06 0Z">
+                                                        </path>
+                                                    </svg>
+                                                    {% elif school.facilities.all.first.Gym == 'N' %}
+                                                    <svg class="no-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm8.036-4.024a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042L10.939 12l-2.963 2.963a.749.749 0 0 0 .326 1.275.749.749 0 0 0 .734-.215L12 13.06l2.963 2.964a.75.75 0 0 0 1.061-1.06L13.061 12l2.963-2.964a.749.749 0 0 0-.326-1.275.749.749 0 0 0-.734.215L12 10.939Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%else%}
+                                                    <svg class="unknown-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M10.97 8.265a1.45 1.45 0 0 0-.487.57.75.75 0 0 1-1.341-.67c.2-.402.513-.826.997-1.148C10.627 6.69 11.244 6.5 12 6.5c.658 0 1.369.195 1.934.619a2.45 2.45 0 0 1 1.004 2.006c0 1.033-.513 1.72-1.027 2.215-.19.183-.399.358-.579.508l-.147.123a4.329 4.329 0 0 0-.435.409v1.37a.75.75 0 1 1-1.5 0v-1.473c0-.237.067-.504.247-.736.22-.28.486-.517.718-.714l.183-.153.001-.001c.172-.143.324-.27.47-.412.368-.355.569-.676.569-1.136a.953.953 0 0 0-.404-.806C12.766 8.118 12.384 8 12 8c-.494 0-.814.121-1.03.265ZM13 17a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z">
+                                                        </path>
+                                                        <path
+                                                            d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1ZM2.5 12a9.5 9.5 0 0 0 9.5 9.5 9.5 9.5 0 0 0 9.5-9.5A9.5 9.5 0 0 0 12 2.5 9.5 9.5 0 0 0 2.5 12Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%endif%}
+                                                </span>
+                                            </li>
+                                            <li
+                                                class="list-group-item d-flex justify-content-between align-items-center">
+                                                <span>Swimming Pool</span>
+                                                <span>
+                                                    {% if school.facilities.all.first.Swimming_Pool == 'Y' %}
+                                                    <svg class="yes-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm16.28-2.72a.751.751 0 0 0-.018-1.042.751.751 0 0 0-1.042-.018l-5.97 5.97-2.47-2.47a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042l3 3a.75.75 0 0 0 1.06 0Z">
+                                                        </path>
+                                                    </svg>
+                                                    {% elif school.facilities.all.first.Swimming_Pool == 'N' %}
+                                                    <svg class="no-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm8.036-4.024a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042L10.939 12l-2.963 2.963a.749.749 0 0 0 .326 1.275.749.749 0 0 0 .734-.215L12 13.06l2.963 2.964a.75.75 0 0 0 1.061-1.06L13.061 12l2.963-2.964a.749.749 0 0 0-.326-1.275.749.749 0 0 0-.734.215L12 10.939Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%else%}
+                                                    <svg class="unknown-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M10.97 8.265a1.45 1.45 0 0 0-.487.57.75.75 0 0 1-1.341-.67c.2-.402.513-.826.997-1.148C10.627 6.69 11.244 6.5 12 6.5c.658 0 1.369.195 1.934.619a2.45 2.45 0 0 1 1.004 2.006c0 1.033-.513 1.72-1.027 2.215-.19.183-.399.358-.579.508l-.147.123a4.329 4.329 0 0 0-.435.409v1.37a.75.75 0 1 1-1.5 0v-1.473c0-.237.067-.504.247-.736.22-.28.486-.517.718-.714l.183-.153.001-.001c.172-.143.324-.27.47-.412.368-.355.569-.676.569-1.136a.953.953 0 0 0-.404-.806C12.766 8.118 12.384 8 12 8c-.494 0-.814.121-1.03.265ZM13 17a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z">
+                                                        </path>
+                                                        <path
+                                                            d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1ZM2.5 12a9.5 9.5 0 0 0 9.5 9.5 9.5 9.5 0 0 0 9.5-9.5A9.5 9.5 0 0 0 12 2.5 9.5 9.5 0 0 0 2.5 12Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%endif%}
+                                                </span>
+                                            </li>
+                                            <li
+                                                class="list-group-item d-flex justify-content-between align-items-center">
+                                                <span>Skating</span>
+                                                <span>
+                                                    {% if school.facilities.all.first.Skating == 'Y' %}
+                                                    <svg class="yes-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm16.28-2.72a.751.751 0 0 0-.018-1.042.751.751 0 0 0-1.042-.018l-5.97 5.97-2.47-2.47a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042l3 3a.75.75 0 0 0 1.06 0Z">
+                                                        </path>
+                                                    </svg>
+                                                    {% elif school.facilities.all.first.Skating == 'N' %}
+                                                    <svg class="no-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm8.036-4.024a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042L10.939 12l-2.963 2.963a.749.749 0 0 0 .326 1.275.749.749 0 0 0 .734-.215L12 13.06l2.963 2.964a.75.75 0 0 0 1.061-1.06L13.061 12l2.963-2.964a.749.749 0 0 0-.326-1.275.749.749 0 0 0-.734.215L12 10.939Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%else%}
+                                                    <svg class="unknown-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M10.97 8.265a1.45 1.45 0 0 0-.487.57.75.75 0 0 1-1.341-.67c.2-.402.513-.826.997-1.148C10.627 6.69 11.244 6.5 12 6.5c.658 0 1.369.195 1.934.619a2.45 2.45 0 0 1 1.004 2.006c0 1.033-.513 1.72-1.027 2.215-.19.183-.399.358-.579.508l-.147.123a4.329 4.329 0 0 0-.435.409v1.37a.75.75 0 1 1-1.5 0v-1.473c0-.237.067-.504.247-.736.22-.28.486-.517.718-.714l.183-.153.001-.001c.172-.143.324-.27.47-.412.368-.355.569-.676.569-1.136a.953.953 0 0 0-.404-.806C12.766 8.118 12.384 8 12 8c-.494 0-.814.121-1.03.265ZM13 17a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z">
+                                                        </path>
+                                                        <path
+                                                            d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1ZM2.5 12a9.5 9.5 0 0 0 9.5 9.5 9.5 9.5 0 0 0 9.5-9.5A9.5 9.5 0 0 0 12 2.5 9.5 9.5 0 0 0 2.5 12Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%endif%}
+                                                </span>
+                                            </li>
+                                            <li
+                                                class="list-group-item d-flex justify-content-between align-items-center">
+                                                <span>Horse Riding</span>
+                                                <span>
+                                                    {% if school.facilities.all.first.Horse_Riding == 'Y' %}
+                                                    <svg class="yes-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm16.28-2.72a.751.751 0 0 0-.018-1.042.751.751 0 0 0-1.042-.018l-5.97 5.97-2.47-2.47a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042l3 3a.75.75 0 0 0 1.06 0Z">
+                                                        </path>
+                                                    </svg>
+                                                    {% elif school.facilities.all.first.Horse_Riding == 'N' %}
+                                                    <svg class="no-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm8.036-4.024a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042L10.939 12l-2.963 2.963a.749.749 0 0 0 .326 1.275.749.749 0 0 0 .734-.215L12 13.06l2.963 2.964a.75.75 0 0 0 1.061-1.06L13.061 12l2.963-2.964a.749.749 0 0 0-.326-1.275.749.749 0 0 0-.734.215L12 10.939Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%else%}
+                                                    <svg class="unknown-svg" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                        <path
+                                                            d="M10.97 8.265a1.45 1.45 0 0 0-.487.57.75.75 0 0 1-1.341-.67c.2-.402.513-.826.997-1.148C10.627 6.69 11.244 6.5 12 6.5c.658 0 1.369.195 1.934.619a2.45 2.45 0 0 1 1.004 2.006c0 1.033-.513 1.72-1.027 2.215-.19.183-.399.358-.579.508l-.147.123a4.329 4.329 0 0 0-.435.409v1.37a.75.75 0 1 1-1.5 0v-1.473c0-.237.067-.504.247-.736.22-.28.486-.517.718-.714l.183-.153.001-.001c.172-.143.324-.27.47-.412.368-.355.569-.676.569-1.136a.953.953 0 0 0-.404-.806C12.766 8.118 12.384 8 12 8c-.494 0-.814.121-1.03.265ZM13 17a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z">
+                                                        </path>
+                                                        <path
+                                                            d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1ZM2.5 12a9.5 9.5 0 0 0 9.5 9.5 9.5 9.5 0 0 0 9.5-9.5A9.5 9.5 0 0 0 12 2.5 9.5 9.5 0 0 0 2.5 12Z">
+                                                        </path>
+                                                    </svg>
+                                                    {%endif%}
+                                                </span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section id="address-contact-section">
+                    <div class="row mt-4">
+                        <div class="card border-1 rounded-lg shadow-sm">
+                            <div class="card-body">
+                                <h4 class="mb-4 h4-blue fw-bold">Address & Contact</h4>
+                                <div class="row">
+                                    <div class="col pt-4">
+                                        <div class="row mb-2">
+                                            <div class="col d-flex align-items-center">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16"
+                                                    height="16">
+                                                    <path
+                                                        d="M3.75 0h8.5C13.216 0 14 .784 14 1.75v12.5A1.75 1.75 0 0 1 12.25 16h-8.5A1.75 1.75 0 0 1 2 14.25V1.75C2 .784 2.784 0 3.75 0ZM3.5 1.75v12.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25V1.75a.25.25 0 0 0-.25-.25h-8.5a.25.25 0 0 0-.25.25ZM8 13a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z">
+                                                    </path>
+                                                </svg>
+                                                <li class="ms-2 list-unstyled c-gray">{{school.number}}</li>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-2">
+                                            <div class="col d-flex align-items-center">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16"
+                                                    height="16">
+                                                    <path
+                                                        d="M1.75 3h20.5c.966 0 1.75.784 1.75 1.75v14a1.75 1.75 0 0 1-1.75 1.75H1.75A1.75 1.75 0 0 1 0 18.75v-14C0 3.784.784 3 1.75 3ZM1.5 7.412V18.75c0 .138.112.25.25.25h20.5a.25.25 0 0 0 .25-.25V7.412l-9.52 6.433c-.592.4-1.368.4-1.96 0Zm0-2.662v.852l10.36 7a.25.25 0 0 0 .28 0l10.36-7V4.75a.25.25 0 0 0-.25-.25H1.75a.25.25 0 0 0-.25.25Z">
+                                                    </path>
+                                                </svg>
+                                                <a href="mailto:{{school.email}}" class="ms-2"
+                                                    style="text-decoration: none;">{{school.email}}</a>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-2">
+                                            <div class="col d-flex align-items-center">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16"
+                                                    height="16">
+                                                    <path
+                                                        d="m12.596 11.596-3.535 3.536a1.5 1.5 0 0 1-2.122 0l-3.535-3.536a6.5 6.5 0 1 1 9.192-9.193 6.5 6.5 0 0 1 0 9.193Zm-1.06-8.132v-.001a5 5 0 1 0-7.072 7.072L8 14.07l3.536-3.534a5 5 0 0 0 0-7.072ZM8 9a2 2 0 1 1-.001-3.999A2 2 0 0 1 8 9Z">
+                                                    </path>
+                                                </svg>
+                                                <li class="ms-2 list-unstyled c-gray">{{school.address}},
+                                                    {{school.city.city_name}}, {{school.state.state_name}}</li>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-2">
+                                            <div class="col d-flex align-items-center">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16"
+                                                    height="16">
+                                                    <path
+                                                        d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM5.78 8.75a9.64 9.64 0 0 0 1.363 4.177c.255.426.542.832.857 1.215.245-.296.551-.705.857-1.215A9.64 9.64 0 0 0 10.22 8.75Zm4.44-1.5a9.64 9.64 0 0 0-1.363-4.177c-.307-.51-.612-.919-.857-1.215a9.927 9.927 0 0 0-.857 1.215A9.64 9.64 0 0 0 5.78 7.25Zm-5.944 1.5H1.543a6.507 6.507 0 0 0 4.666 5.5c-.123-.181-.24-.365-.352-.552-.715-1.192-1.437-2.874-1.581-4.948Zm-2.733-1.5h2.733c.144-2.074.866-3.756 1.58-4.948.12-.197.237-.381.353-.552a6.507 6.507 0 0 0-4.666 5.5Zm10.181 1.5c-.144 2.074-.866 3.756-1.58 4.948-.12.197-.237.381-.353.552a6.507 6.507 0 0 0 4.666-5.5Zm2.733-1.5a6.507 6.507 0 0 0-4.666-5.5c.123.181.24.365.353.552.714 1.192 1.436 2.874 1.58 4.948Z">
+                                                    </path>
+                                                </svg>
+                                                <li class="ms-2 list-unstyled c-gray">{{school.website}}</li>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="card">
+                                            <iframe width="500" height="170" id="gmap_canvas"
+                                                src="https://www.google.com/maps/embed/v1/place?key=AIzaSyDQcni1G12Iz3la7OP41SLgRtXgH8Vw930&amp;q={{school.latitude}},{{school.longitude}}"
+                                                frameborder="0" scrolling="no" marginheight="0" marginwidth="0"
+                                                data-v-162837f1=""></iframe>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <div class="col" style="position: sticky; top: 7rem; height: 2.7rem; width:auto;">
+                <div class="card border-1 rounded-lg shadow-sm">
+                    <div class="card-body">
+                        <nav class="nav flex-column">
+                            <h6></h6>
+                            <a class="nav-link text-muted page-nav" aria-current="page"
+                                href="#basic-details-section">Basic
+                                Details</a>
+                            <a class="nav-link text-muted page-nav" href="#about-section">About</a>
+                            <a class="nav-link text-muted page-nav" href="#facilities-section">Facilities</a>
+                            <a class="nav-link text-muted page-nav" href="#address-contact-section">Address &
+                                Contact</a>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+    </section>
+
+    </div>
+</section>
+
+{% endblock %}

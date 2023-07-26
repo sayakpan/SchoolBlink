@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+{% extends 'Profiles/base.html' %}
+{% load static %}
+{% block body_block %}
+
+<section>
+    <section class="container mt-3" style="position: relative">
+        <div class="row ">
+            <div class="col-2">
+                <img src="{{ school.logo.url }}" width="150" height="150"
+                    class="ms-4 my-3 border shadow-sm rounded-circle" style="object-fit: cover;" alt="...">
+            </div>
+            <div class="col-6 mt-5 justify-content-right">
+                <h6 class="text-muted text-start">Welcome,</h6>
+                <h3 class="h3 text-start">{{school.school_name}}</h3>
+            </div>
+        </div>
+
+
+    </section>
+    <section class="container mt-3">
+        <div class="row">
+            <div class="d-flex align-items-start ms-4">
+                <div class="col-2">
+                    <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist"
+                        aria-orientation="vertical">
+                        <button class="nav-link active px-5 mb-3" id="v-pills-dashboard-tab" data-bs-toggle="pill"
+                            data-bs-target="#v-pills-dashboard" type="button" role="tab"
+                            aria-controls="v-pills-dashboard" aria-selected="true">Dashboard</button>
+                        <button class="nav-link mb-3" id="v-pills-edit-tab" data-bs-toggle="pill"
+                            data-bs-target="#v-pills-edit" type="button" role="tab" aria-controls="v-pills-edit"
+                            aria-selected="false">Edit Details</button>
+                        <button class="nav-link mb-3" id="v-pills-settings-tab" data-bs-toggle="pill"
+                            data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings"
+                            aria-selected="false">Settings</button>
+                        <button class="nav-link mb-3" id="v-pills-account-tab" data-bs-toggle="pill"
+                            data-bs-target="#v-pills-account" type="button" role="tab" aria-controls="v-pills-account"
+                            aria-selected="false">Account</button>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="tab-content" id="v-pills-tabContent">
+                        <!-- Dashboard TAB -->
+                        <div class="tab-pane fade show active" id="v-pills-dashboard" role="tabpanel"
+                            aria-labelledby="v-pills-dashboard-tab" tabindex="0">
+                            <div class="container">
+                                <div class="row">
+                                    Dashboard
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Edit Details TAB -->
+
+                        <div class="tab-pane fade" id="v-pills-edit" role="tabpanel" aria-labelledby="v-pills-edit-tab"
+                            tabindex="0">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="card shadow-sm border-1 rounded-more">
+                                        <div class=" card-body">
+                                            <h4 class="h4-blue">Change School Logo</h4>
+                                            <small>Your school logo will be used on your school and thoughout the
+                                                site.</small>
+                                            <form action="{% url 'Profiles:uploadlogo' slug=school_slug %}"
+                                                method="POST" enctype="multipart/form-data">
+                                                {% csrf_token %}
+                                                <div class="row mt-4">
+                                                    <div class="col-6">
+                                                        <div class="input-group mb-3">
+                                                            <input type="file" class="form-control"
+                                                                id="inputGroupFile02" accept="image/*" name="logo">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col">
+                                                        <button type="submit" class="btn btn-primary">Upload</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mt-4">
+                                    <div class="card shadow-sm border-1 rounded-more">
+                                        <div class=" card-body">
+                                            <h4 class="mb-4 h4-blue">Edit School Info</h4>
+                                            <form id="SchoolUpdateForm"
+                                                action="{% url 'Profiles:schoolUpdate' slug=school_slug %}"
+                                                method="POST" onsubmit="submitForm(event,'SchoolUpdateForm')">
+                                                {% csrf_token %}
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <div class="form-floating">
+                                                            <input name="school_name" type="name"
+                                                                class="form-control text-navy"
+                                                                id="floatingInputGridName" placeholder="School Name"
+                                                                value="{{school.school_name}}">
+                                                            <label for="floatingInputGridName"
+                                                                style="z-index: 1;">School Name {{school_slug}}</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col">
+                                                        <span data-bs-toggle="tooltip"
+                                                            data-bs-custom-class="custom-tooltip" data-bs-title="Email cannot be
+                                                        changed" data-bs-placement="top">
+                                                            <div class="form-floating">
+                                                                <input name="email" type="email"
+                                                                    class="form-control text-navy"
+                                                                    id="floatingInputGridEmail"
+                                                                    placeholder="name@example.com"
+                                                                    value="{{school.email}}" readonly>
+                                                                <label for="floatingInputGridEmail">Email</label>
+                                                            </div>
+                                                        </span>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="form-floating">
+                                                            <input name="number" type="number"
+                                                                class="form-control text-navy"
+                                                                id="floatingInputGridMobile" placeholder="1234567890"
+                                                                value="{{school.number}}">
+                                                            <label for="floatingInputGridMobile">Mobile Number</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row mt-3">
+                                                    <div class="col">
+                                                        <div class="form-floating">
+                                                            <input name="website" type="text"
+                                                                class="form-control text-navy"
+                                                                id="floatingInputGridWebsite" placeholder="www.abc.com"
+                                                                value="{{school.website}}">
+                                                            <label for="floatingInputGridWebsite">School Website</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="form-floating">
+                                                            <input name="school_timings" type="text"
+                                                                class="form-control text-navy"
+                                                                id="floatingInputGridschool_timings"
+                                                                placeholder="www.abc.com"
+                                                                value="{{school.school_timings}}">
+                                                            <label for="floatingInputGridschool_timings">School
+                                                                Timing</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="form-floating">
+                                                            <input name="year_established" type="text"
+                                                                class="form-control text-navy"
+                                                                id="floatingInputGridyear_established"
+                                                                placeholder="www.abc.com"
+                                                                value="{{school.year_established}}">
+                                                            <label for="floatingInputGridyear_established">Year
+                                                                Established</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row mt-3">
+                                                    <div class="col">
+                                                        <div class="form-floating">
+                                                            <select class="form-select text-navy"
+                                                                id="floatingSelectschool_format"
+                                                                aria-label="Floating label select example"
+                                                                name="school_format">
+                                                                {% for format in all_formats %}
+                                                                <option value="{{format.id}}"
+                                                                    {% if school.school_format == format %} selected
+                                                                    {%endif%}>
+                                                                    {{format}}</option>
+                                                                {%endfor%}
+                                                            </select>
+                                                            <label for="floatingSelectschool_format">School
+                                                                Format</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="form-floating">
+                                                            <select class="form-select text-navy"
+                                                                id="floatingSelectschool_type"
+                                                                aria-label="Floating label select example"
+                                                                name="school_type">
+                                                                {% for type in all_types %}
+                                                                <option value="{{type.id}}"
+                                                                    {% if school.school_type == type %} selected
+                                                                    {%endif%}>
+                                                                    {{type.school_type}}</option>
+                                                                {%endfor%}
+                                                            </select>
+                                                            <label for="floatingSelectschool_type">School Type</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="form-floating">
+                                                            <select class="form-select text-navy"
+                                                                id="floatingSelectschool_board"
+                                                                aria-label="Floating label select example"
+                                                                name="school_board">
+                                                                {% for board in all_boards %}
+                                                                <option value="{{board.id}}"
+                                                                    {% if school.school_board.all.first == board %}
+                                                                    selected {%endif%}>
+                                                                    {{board}}</option>
+                                                                {%endfor%}
+                                                            </select>
+                                                            <label for="floatingSelectschool_board">School Board</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row mt-3">
+                                                    <div class="col">
+                                                        <div class="form-floating">
+                                                            <select class="form-select text-navy"
+                                                                id="floatingSelectcoed_status"
+                                                                aria-label="Floating label select example"
+                                                                name="coed_status">
+                                                                {% for value, label in school.coed_status_choices %}
+                                                                <option value="{{ value }}"
+                                                                    {% if label == school.get_coed_status_display %}
+                                                                    selected {% endif %}>
+                                                                    {{label}}</option>
+                                                                {% endfor %}
+                                                            </select>
+                                                            <label for="floatingSelectcoed_status">School Co-ed
+                                                                Status</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="form-floating">
+                                                            <select class="form-select text-navy"
+                                                                id="floatingSelectschool_medium"
+                                                                aria-label="Floating label select example"
+                                                                name="school_medium">
+                                                                {% for value, label in school.school_medium_choices %}
+                                                                <option value="{{ value }}"
+                                                                    {% if label == school.get_school_medium_display %}
+                                                                    selected {% endif %}>
+                                                                    {{label}}</option>
+                                                                {% endfor %}
+                                                            </select>
+                                                            <label for="floatingSelectschool_medium">School
+                                                                Medium</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="form-floating">
+                                                            <select class="form-select text-navy"
+                                                                id="floatingSelectownership"
+                                                                aria-label="Floating label select example"
+                                                                name="ownership">
+                                                                {% for value, label in school.ownership_choices %}
+                                                                <option value="{{ value }}"
+                                                                    {% if label == school.get_ownership_display %}
+                                                                    selected {% endif %}>
+                                                                    {{label}}</option>
+                                                                {% endfor %}
+                                                            </select>
+                                                            <label for="floatingSelectownership">Ownership</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row mt-3">
+                                                    <div class="col">
+                                                        <div class="form-floating">
+                                                            <input name="address" type="text"
+                                                                class="form-control text-navy"
+                                                                id="floatingInputGridaddress" placeholder="1234567890"
+                                                                value="{{school.address}}">
+                                                            <label for="floatingInputGridaddress">Address</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row mt-3">
+                                                    <div class="col">
+                                                        <div class="form-floating">
+                                                            <select class="form-select text-navy"
+                                                                id="floatingSelectcountry"
+                                                                aria-label="Floating label select example"
+                                                                name="country">
+                                                                {% for country in all_country %}
+                                                                <option value="{{country.id}}"
+                                                                    {% if school.country == country %} selected
+                                                                    {%endif%}>
+                                                                    {{country}}</option>
+                                                                {%endfor%}
+                                                            </select>
+                                                            <label for="floatingSelectcountry">School
+                                                                Country</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="form-floating">
+                                                            <select class="form-select text-navy"
+                                                                id="floatingSelectstate"
+                                                                aria-label="Floating label select example" name="state">
+                                                                {% for state in all_state %}
+                                                                <option value="{{state.id}}"
+                                                                    {% if school.state == state %} selected {%endif%}>
+                                                                    {{state}}</option>
+                                                                {%endfor%}
+                                                            </select>
+                                                            <label for="floatingSelectstate">School State</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="form-floating">
+                                                            <select class="form-select text-navy"
+                                                                id="floatingSelectcity"
+                                                                aria-label="Floating label select example" name="city">
+                                                                {% for city in all_city %}
+                                                                <option value="{{city.id}}" {% if school.city == city %}
+                                                                    selected {%endif%}>
+                                                                    {{city}}</option>
+                                                                {%endfor%}
+                                                            </select>
+                                                            <label for="floatingSelectcity">School City</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row mt-3">
+                                                        <div class="col">
+                                                            <label class="mt-3 ms-2">About</label>
+                                                            <textarea name="about" type=""
+                                                                class="form-control text-navy" id="about" rows="10"
+                                                                value="{{school.about}}">{{school.about}}</textarea>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row mt-3">
+                                                    <div class="col d-flex justify-content-end">
+                                                        <button type="submit" class="btn btn-primary rounded-pill"
+                                                            id="SaveBtn">
+                                                            Save Changes</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- Settings TAB -->
+
+                        <div class="tab-pane fade" id="v-pills-settings" role="tabpanel"
+                            aria-labelledby="v-pills-settings-tab" tabindex="0">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="card shadow-sm border-1 rounded-more">
+                                        <div class=" card-body">
+                                            <h4 class="h4-blue">Available Classes</h4>
+                                            <small>Select all the classes available in your school.</small>
+                                            <form action="{% url 'Profiles:updateclass' slug=school_slug %}"
+                                                method="POST">
+                                                {% csrf_token %}
+                                                <div class="row mt-4">
+                                                    {% for class in all_classes %}
+                                                    <div class="col-2 mt-2">
+                                                        <div class="form-check">
+                                                            <input name="school_class" class="form-check-input"
+                                                                type="checkbox" value="{{class.id}}" id="{{class.id}}"
+                                                                {% if class in school.school_class.all %} checked
+                                                                {%endif%}>
+                                                            <label class="form-check-label" for="{{class.id}}">
+                                                                {{class}}
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    {%endfor%}
+                                                </div>
+                                                <div class="row mt-3">
+                                                    <div class="col d-flex justify-content-end">
+                                                        <button type="submit" class="btn btn-primary rounded-pill"
+                                                            id="SaveBtn">
+                                                            Save Changes</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mt-4">
+                                    <div class="card shadow-sm border-1 rounded-more">
+                                        <div class=" card-body">
+                                            <h4 class="h4-blue">Open Admissions</h4>
+                                            <small>Add classes and enter details to open admission and accept
+                                                application forms.</small>
+                                            <div class="row mt-4">
+                                                {% for class in school.school_class.all %}
+                                                <div class="col-2 mt-2">
+                                                    <button type="button" class="btn btn-sm 
+                                                            {% for opened_class in admission_classes %}
+                                                            {% if opened_class.class_opened == class and opened_class.status == '1' %}
+                                                            btn-success
+                                                            {% else %}
+                                                            btn-secondary
+                                                            {%endif%}
+                                                            {%endfor%}
+                                                            rounded-pill btn-wide" id="{{class.id}}"
+                                                        data-bs-target="#openAdmission{{class.id}}"
+                                                        data-bs-toggle="modal">{{class}}</button>
+                                                </div>
+                                                <div class="modal fade" id="openAdmission{{class.id}}" tabindex="-1"
+                                                    aria-labelledby="openAdmissionLabel" aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                                                        <div class="modal-dialog" role="document">
+                                                            <div class="modal-content rounded-4 shadow">
+                                                                <div class="modal-header p-5 pb-4 border-bottom-0">
+                                                                    <h1 class="fw-bold mb-0 fs-2">Open Admissions
+                                                                        for {{class}}
+                                                                    </h1>
+                                                                    <button type="button" class="btn-close"
+                                                                        data-bs-dismiss="modal"
+                                                                        aria-label="Close"></button>
+                                                                </div>
+                                                                <div class="modal-body p-5 pt-0">
+                                                                    <form class="mt-4"
+                                                                        action="{% url 'Profiles:changeadmission' slug=school_slug %}"
+                                                                        method="POST">
+                                                                        {% csrf_token %}
+                                                                        <div class="mb-3">
+                                                                            <label for="form_limit"
+                                                                                class="form-label text-muted">Form
+                                                                                Limit</label>
+                                                                            <input name="form_limit" type="text"
+                                                                                class="form-control" id="form_limit"
+                                                                                {% for opened_class in admission_classes %}
+                                                                                {% if opened_class.class_opened == class and opened_class.status == '1' %}
+                                                                                value="{{opened_class.form_limit}}"
+                                                                                {%endif%} {%endfor%} required>
+                                                                        </div>
+                                                                        <div class="mb-3">
+                                                                            <label for="form_price"
+                                                                                class="form-label text-muted">Form
+                                                                                Price</label>
+                                                                            <input name="form_price" type="text"
+                                                                                class="form-control" id="form_price"
+                                                                                {% for opened_class in admission_classes %}
+                                                                                {% if opened_class.class_opened == class and opened_class.status == '1' %}
+                                                                                value="{{opened_class.form_price}}"
+                                                                                {%endif%} {%endfor%} required>
+                                                                        </div>
+                                                                        <div class="mb-3">
+                                                                            <div class="form-floating">
+                                                                                <select name="status"
+                                                                                    class="form-select" id="status"
+                                                                                    aria-label="Floating label select example">
+                                                                                    <option
+                                                                                        {% for opened_class in admission_classes %}
+                                                                                        {% if opened_class.class_opened == class and opened_class.status == '0' %}
+                                                                                        selected {%endif%} {%endfor%}
+                                                                                        value="0">
+                                                                                        Close
+                                                                                    </option>
+                                                                                    <option
+                                                                                        {% for opened_class in admission_classes %}
+                                                                                        {% if opened_class.class_opened == class and opened_class.status == '1' %}
+                                                                                        selected {%endif%} {%endfor%}
+                                                                                        value="1">
+                                                                                        Open
+                                                                                    </option>
+
+                                                                                </select>
+                                                                                <label for="status">Admission
+                                                                                    Status</label>
+                                                                            </div>
+                                                                            <input type="hidden" name="class_opened"
+                                                                                value="{{class.id}}">
+                                                                            <input type="hidden" name="school"
+                                                                                value="{{school.id}}">
+                                                                        </div>
+                                                                        <input type="hidden" name="class_opened"
+                                                                            value="{{class.id}}">
+                                                                        <button id="submitbtn"
+                                                                            class="w-100 mt-2 mb-2 btn btn-lg rounded-3 btn-success"
+                                                                            type="submit">Submit</button>
+                                                                    </form>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                {%endfor%}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- Account TAB -->
+
+                        <div class="tab-pane fade" id="v-pills-account" role="tabpanel"
+                            aria-labelledby="v-pills-account-tab" tabindex="0">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="card shadow-sm border-1 rounded-more">
+                                        <div class=" card-body">
+                                            <h4 class="h4-blue">Reset Password</h4>
+                                            <small>Your password should have at least 6 characters.</small>
+                                            <form action="" method="POST">
+                                                {% csrf_token %}
+                                                <div class="row mt-4">
+                                                    <div class="col">
+                                                        <div class="form-floating">
+                                                            <input type="password" class="form-control" id="oldPassword"
+                                                                placeholder="Password" name="oldPassword">
+                                                            <label for="oldPassword">Enter Old Password</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="form-floating">
+                                                            <input type="password" class="form-control" id="newPassword"
+                                                                placeholder="Password" name="newPassword">
+                                                            <label for="newPassword">New Password</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="form-floating">
+                                                            <input type="password" class="form-control"
+                                                                id="confirmPassword" placeholder="Password"
+                                                                name="confirmPassword">
+                                                            <label for="confirmPassword">Confirm New Password</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                {% if messages %}
+                                                {% for message in messages %}
+                                                {% if message.tags == "reset error" %}
+                                                <div {% if message.tags %}
+                                                    class="{{ message.tags }} row ms-2 mt-3 text-danger" {%endif%}>
+                                                    {{message}}
+                                                </div>
+                                                {%endif%}
+                                                {% endfor %}
+                                                {% endif %}
+                                                <div class="row mt-3">
+                                                    <div class="col d-flex justify-content-end">
+                                                        <button type="submit" class="btn btn-danger rounded-pill"
+                                                            id="resetBtn">
+                                                            Reset Password</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+</section>
+
+<!-- Open Admission MODAL -->
+
+
+<!-- TOAST -->
+<div class="toast toast-green align-items-center rounded-pill" role="alert" aria-live="assertive" aria-atomic="true"
+    style="position: fixed; top: 8rem; right: 7rem; height: 2.7rem; width:auto;z-index: 9999">
+    <div class="toast-body">
+        Changes Succesfully Updated...!
+    </div>
+</div>
+
+
+{% endblock %}

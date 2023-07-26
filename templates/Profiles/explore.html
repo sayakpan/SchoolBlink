@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+{% extends 'Profiles/base.html' %}
+{% load static %}
+{% block body_block %}
+
+<section class="container mt-3 ">
+    <form action="{% url 'Profiles:explore' %}" method="post">
+        {% csrf_token %}
+        <div class="row mt-3">
+            <div class="col">
+                <div class="form-floating">
+                    <select name="country" class="form-select" id="floatingSelect"
+                        aria-label="Floating label select example">
+                        <option value="-1" selected>All Countries</option>
+                        {%if country_data %}
+                        {% for option in country_data %}
+                        <option value="{{ option.id }}">{{option.country_name}}</option>
+                        {% endfor %}
+                        {% endif %}
+                    </select>
+                    <label for="floatingSelect">Country</label>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-floating">
+                    <select name="state" class="form-select" id="floatingSelect"
+                        aria-label="Floating label select example">
+                        <option value="-1" selected>All States</option>
+                        {%if state_data %}
+                        {% for option in state_data %}
+                        <option value="{{ option.id }}">{{option.state_name}}</option>
+                        {% endfor %}
+                        {% endif %}
+                    </select>
+                    <label for="floatingSelect">State</label>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-floating">
+                    <select name="city" class="form-select" id="floatingSelect"
+                        aria-label="Floating label select example">
+                        <option value="-1" selected>All Cities</option>
+                        {%if city_data %}
+                        {% for option in city_data %}
+                        <option value="{{ option.id }}">{{option.city_name}}</option>
+                        {% endfor %}
+                        {% endif %}
+                    </select>
+                    <label for="floatingSelect">City</label>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-floating">
+                    <select name="school_format" class="form-select" id="floatingSelect"
+                        aria-label="Floating label select example">
+                        <option value="-1" selected>All Formats</option>
+                        {%if school_format_data %}
+                        {% for option in school_format_data %}
+                        <option value="{{ option.id }}">{{option.school_format}}</option>
+                        {% endfor %}
+                        {% endif %}
+                    </select>
+                    <label for="floatingSelect">School Format</label>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-floating">
+                    <select name="school_type" class="form-select" id="floatingSelect"
+                        aria-label="Floating label select example">
+                        <option value="-1" selected>All Levels</option>
+                        {%if school_type_data %}
+                        {% for option in school_type_data %}
+                        <option value="{{ option.id }}">{{option.school_type}}</option>
+                        {% endfor %}
+                        {% endif %}
+                    </select>
+                    <label for="floatingSelect">School Level</label>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-floating">
+                    <select name="school_board" class="form-select" id="floatingSelect"
+                        aria-label="Floating label select example">
+                        <option value="-1" selected>All Boards</option>
+                        {%if school_board_data %}
+                        {% for option in school_board_data %}
+                        <option value="{{ option.id }}">{{option.school_board}}</option>
+                        {% endfor %}
+                        {% endif %}
+                    </select>
+                    <label for="floatingSelect">School Board</label>
+                </div>
+            </div>
+            <div class="row my-3 ">
+                <div class="col d-flex align-items-center justify-content-center">
+                    <button class="btn btn-outline-green rounded-pill px-4" type="submit">Apply</button>
+                    <a class="btn btn-outline-danger rounded-pill px-4 ms-2"
+                        href="{% url 'Profiles:explore' %}">Reset</a>
+                </div>
+            </div>
+        </div>
+        </div>
+    </form>
+</section>
+<section class="container my-5 ">
+    {%if school_data %}
+    <div class="row row-cols-1 row-cols-md-4 g-4">
+        {% for row in school_data %}
+        <div class="col">
+            <div class="card card-hover h-100 rounded-3 text-center">
+                <div class="row">
+                    <a>
+                        <img src="{{ row.logo.url }}" class="border shadow-sm rounded-circle mt-3" width="100px"
+                            height="100px" style="object-fit: cover;">
+                    </a>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ row.school_name }}</h5>
+                        <p>{{row.city.city_name}}, {{row.state.state_name}}</p>
+                        <p><a class="btn btn-outline-primary rounded-pill"
+                                href="{% url 'Profiles:schoolProfile' slug=row.slug %}">View
+                                Details »</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="row">
+        <div class="card border-0 rounded-0 text-center p-3 d-flex align-items-center justify-content-center"><img
+                src="{% static 'images/filter_not_found.jpg' %}" width="300" alt="No record Found">
+            <h3 class="m-0 font-weight-semibold">No Record Found</h3>
+            <p class="font16 text-muted m-0 font-1" id="msgNoRecordFound">We couldn't find any schools matching the
+                criteria. Please remove the filters applied and try again.</p>
+        </div>
+    </div>
+    {% endif %}
+</section>
+
+{% endblock %}

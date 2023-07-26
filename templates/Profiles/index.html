@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+{% extends 'Profiles/base.html' %}
+{% load static %}
+{% block body_block %}
+
+<!-- SEARCH AREA -->
+
+<section>
+    <div class="background-div">
+        <div class="container">
+            <div class="d-flex flex-row justify-content-center">
+                <h2 class="mb-5 text-light display-6">What are you looking for?</h2>
+            </div>
+            <div class="d-flex flex-row justify-content-center">
+                <form class="d-flex w-50">
+                    <input class="form-control search-bar-home me-2 rounded-pill " type="search"
+                        placeholder="Search school" aria-label="Search">
+                    <button class="btn btn-outline-light rounded-pill me-5 search-button-home" type="submit">
+                        <svg class="search-button-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16"
+                            height="16">
+                            <path
+                                d="M10.68 11.74a6 6 0 0 1-7.922-8.982 6 6 0 0 1 8.982 7.922l3.04 3.04a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215ZM11.5 7a4.499 4.499 0 1 0-8.997 0A4.499 4.499 0 0 0 11.5 7Z">
+                            </path>
+                        </svg>
+                        Search</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- OWL CAROUSEL -->
+
+<section class="mt-5">
+    <div class="owl-carousel">
+        {% for school in school_data %}
+        <div class="item">
+            <div class="card h-100 rounded-more text-center">
+                <div class="row">
+                    <div class="mb-2">
+                        <img src="{{school.cover.url}}" alt="{{school.school_name}}">
+                    </div>
+                    <div class="card-body">
+                        <p class="card-title fw-bold text-wrap m-0">{{school.school_name}}
+                        </p>
+                        <p class="text-secondary m-0">{{school.city.city_name}}, {{school.state.state_name}}
+                        </p>
+                        {% if school.school_board %}
+                        <div><strong>Affiliated to :</strong>
+                            {% for board in school.school_board.all %}{{board.school_board}}
+                            {% if not forloop.last %},
+                            {% endif %}{%endfor%}
+                        </div>
+                        {% endif %}
+                        <a class="btn btn-primary btn-sm px-3 mt-3"
+                            href="{% url 'Profiles:schoolProfile' slug=school.slug %}">Apply
+                            Now</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {%endfor%}
+    </div>
+</section>
+
+<!-- School Format Cards -->
+
+<section>
+    <div class="container">
+        <div class="m-1 p-4 ">
+            <div class="row row-cols-1 row-cols-md-4 g-4">
+                {%if school_format %}
+                {% for row in school_format %}
+                <div class="col">
+                    <div class="card card-hover-grow h-100 rounded-3 text-center">
+                        <div class="row"><a href="{% url 'Profiles:customExplore' slug=row.slug %}" class="a-no-dec">
+                                <div class="mt-3 mb-2">
+                                    {% if row.id == 1 %}
+                                    <img src="{% static 'svg/day.svg' %}" width="100px" height="100px" alt="">
+                                    {% elif row.id == 2 %}
+                                    <img src="{% static 'svg/boarding.svg' %}" width="100px" height="100px" alt="">
+                                    {% elif row.id == 3 %}
+                                    <img src="{% static 'svg/online.svg' %}" width="100px" height="100px" alt="">
+                                    {% elif row.id == 4 %}
+                                    <img src="{% static 'svg/dayboarding.svg' %}" width="100px" height="100px" alt="">
+                                    {% endif %}
+                                </div>
+                                <div class="card-body">
+                                    <h6 class="h5 card-title">{{ row.school_format }}</h6>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                {% else %}
+                <p>No Record Found</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+{% endblock %}

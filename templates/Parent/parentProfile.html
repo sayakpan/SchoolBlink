@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+{% extends 'Profiles/base.html' %}
+{% load static %}
+{% block body_block %}
+
+
+<section>
+    <section class="container mt-3" style="position: relative">
+        <div class="row ">
+            <div class="col-2">
+                <img src="{{ parent.profile_image.url }}" width="150" height="150"
+                    class="ms-4 my-3 border shadow-sm rounded-circle" style="object-fit: cover;" alt="...">
+            </div>
+            <div class="col-6 mt-5 justify-content-right">
+                <h6 class="text-muted text-start">Welcome,</h6>
+                <h3 class="h3 text-start">{{parent.name}}</h3>
+            </div>
+        </div>
+
+
+    </section>
+    <section class="container mt-3">
+        <div class="row">
+            <div class="d-flex align-items-start ms-4">
+                <div class="col-2">
+                    <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist"
+                        aria-orientation="vertical">
+                        <button class="nav-link active px-5 mb-3" id="v-pills-home-tab" data-bs-toggle="pill"
+                            data-bs-target="#v-pills-home" type="button" role="tab" aria-controls="v-pills-home"
+                            aria-selected="true">Profile</button>
+                        <button class="nav-link mb-3" id="v-pills-profile-tab" data-bs-toggle="pill"
+                            data-bs-target="#v-pills-profile" type="button" role="tab" aria-controls="v-pills-profile"
+                            aria-selected="false">Account</button>
+                        <button class="nav-link mb-3" id="v-pills-messages-tab" data-bs-toggle="pill"
+                            data-bs-target="#v-pills-messages" type="button" role="tab" aria-controls="v-pills-messages"
+                            aria-selected="false">Manage Child</button>
+                        <button class="nav-link mb-3" id="v-pills-settings-tab" data-bs-toggle="pill"
+                            data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings"
+                            aria-selected="false">My Applications</button>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="tab-content" id="v-pills-tabContent">
+                        <!-- PROFILE TAB -->
+                        <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel"
+                            aria-labelledby="v-pills-home-tab" tabindex="0">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="card shadow-sm border-1 rounded-more">
+                                        <div class=" card-body">
+                                            <h4 class="mb-4 h4-blue">Account Details</h4>
+                                            <form id="accountForm"
+                                                action="{% url 'Parent:accountupdate' slug=parent.slug %}" method="POST"
+                                                onsubmit="submitForm(event,'accountForm')">
+                                                {% csrf_token %}
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <div class="form-floating">
+                                                            <input name="name" type="name"
+                                                                class="form-control text-navy"
+                                                                id="floatingInputGridName" placeholder="Your Name"
+                                                                value="{{parent.name}}">
+                                                            <label for="floatingInputGridName"
+                                                                style="z-index: 1;">Name</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col">
+                                                        <span data-bs-toggle="tooltip"
+                                                            data-bs-custom-class="custom-tooltip" data-bs-title="Email cannot be
+                                                        changed" data-bs-placement="top">
+                                                            <div class="form-floating">
+                                                                <input name="email" type="email"
+                                                                    class="form-control text-navy"
+                                                                    id="floatingInputGridEmail"
+                                                                    placeholder="name@example.com"
+                                                                    value="{{parent.email}}" readonly>
+                                                                <label for="floatingInputGridEmail">Email</label>
+                                                            </div>
+                                                        </span>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="form-floating">
+                                                            <input name="phone_number" type="number"
+                                                                class="form-control text-navy"
+                                                                id="floatingInputGridMobile" placeholder="1234567890"
+                                                                value="{{parent.phone_number}}">
+                                                            <label for="floatingInputGridMobile">Mobile Number</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row mt-3">
+                                                    <div class="col d-flex justify-content-end">
+                                                        <button type="submit" class="btn btn-primary rounded-pill"
+                                                            id="SaveBtn">
+                                                            Save Changes</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="card shadow-sm border-1 rounded-more">
+                                        <div class=" card-body">
+                                            <h4 class="mb-4 h4-blue">Personal Details</h4>
+                                            <form id="personalform"
+                                                action="{% url 'Parent:personalupdate' slug=parent.slug %}"
+                                                method="POST" onsubmit="submitForm(event,'personalform')">
+                                                {% csrf_token %}
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <div class="form-floating">
+                                                            <input type=" text" class="form-control text-navy"
+                                                                id="dateOfBirthInput" placeholder="Date of Birth"
+                                                                value="{{ parent.date_of_birth|date:'j M Y' }}"
+                                                                name="date_of_birth">
+                                                            <label for="dateOfBirthInput">Date of Birth</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="form-floating">
+                                                            <select class="form-select text-navy"
+                                                                id="floatingSelectGender"
+                                                                aria-label="Floating label select example"
+                                                                name="gender">
+                                                                {% for value, label in parent.gender_choices %}
+                                                                <option value="{{ value }}"
+                                                                    {% if label == parent.get_gender_display %} selected
+                                                                    {% endif %}>
+                                                                    {{label}}</option>
+                                                                {% endfor %}
+
+                                                            </select>
+                                                            <label for="floatingSelectGender">Gender</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="form-floating">
+                                                            <select class="form-select text-navy"
+                                                                id="floatingSelectqualification"
+                                                                aria-label="Floating label select example"
+                                                                name="qualification">
+                                                                {% for value, label in parent.qualification_choices %}
+                                                                <option value="{{ value }}"
+                                                                    {% if label == parent.get_qualification_display %}
+                                                                    selected {% endif %}>
+                                                                    {{label}}</option>
+                                                                {% endfor %}
+                                                            </select>
+                                                            <label for="floatingSelectqualification">My Qualification
+                                                                is</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row mt-3">
+                                                    <div class="col">
+                                                        <div class="form-floating">
+                                                            <select class="form-select text-navy"
+                                                                id="floatingSelectrelation_with_child"
+                                                                aria-label="Floating label select example"
+                                                                name="relation_with_child">
+                                                                {% for value, label in parent.relation_with_child_choices %}
+                                                                <option value="{{ value }}"
+                                                                    {% if label == parent.get_relation_with_child_display %}
+                                                                    selected {% endif %}>
+                                                                    {{label}}</option>
+                                                                {% endfor %}
+
+                                                            </select>
+                                                            <label for="floatingSelectrelation_with_child">I am
+                                                                a</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="form-floating">
+                                                            <select class="form-select text-navy"
+                                                                id="floatingSelectinterested_class"
+                                                                aria-label="Floating label select example"
+                                                                name="interested_class">
+                                                                {% for class in all_classes %}
+                                                                <option value="{{ class.id }}"
+                                                                    {% if class.school_class == parent.interested_class.school_class %}
+                                                                    selected {% endif %}>
+                                                                    {{ class.school_class }}
+                                                                </option>
+                                                                {%endfor%}
+                                                            </select>
+                                                            <label for="floatingSelectinterested_class">I am looking for
+                                                                admission
+                                                                in</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="form-floating">
+                                                            <select class="form-select text-navy"
+                                                                id="floatingSelectincome_range"
+                                                                aria-label="Floating label select example"
+                                                                name="income_range">
+                                                                {% for value, label in parent.income_range_choices %}
+                                                                <option value="{{ value }}"
+                                                                    {% if label == parent.get_income_range_display %}
+                                                                    selected {% endif %}>
+                                                                    {{label}}</option>
+                                                                {% endfor %}
+                                                            </select>
+                                                            <label for="floatingSelectincome_range">Family annual income
+                                                                per annum
+                                                                is</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row mt-3">
+                                                    <div class="col">
+                                                        <div class="form-floating">
+                                                            <select class="form-select text-navy"
+                                                                id="floatingSelectNationality"
+                                                                aria-label="Floating label select example"
+                                                                name="country">
+                                                                {% for obj in all_country %}
+                                                                <option value="{{ obj.id }}"
+                                                                    {% if obj.country_name == parent.country.country_name %}
+                                                                    selected {% endif %}>
+                                                                    {{obj.country_name}}</option>
+                                                                {% endfor %}
+
+                                                            </select>
+                                                            <label for="floatingSelectNationality">Nationality</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="form-floating">
+                                                            <select class="form-select text-navy"
+                                                                id="floatingSelectState"
+                                                                aria-label="Floating label select example" name="state">
+                                                                {% for obj in all_state %}
+                                                                <option value="{{ obj.id }}"
+                                                                    {% if obj.state_name == parent.state.state_name %}
+                                                                    selected {% endif %}>
+                                                                    {{obj.state_name}}</option>
+                                                                {% endfor %}
+
+                                                            </select>
+                                                            <label for="floatingSelectState">State</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="form-floating">
+                                                            <select class="form-select text-navy"
+                                                                id="floatingSelectCity"
+                                                                aria-label="Floating label select example" name="city">
+                                                                {% for obj in all_city %}
+                                                                <option value="{{ obj.id }}"
+                                                                    {% if obj.city_name == parent.city.city_name %}
+                                                                    selected {% endif %}>
+                                                                    {{obj.city_name}}</option>
+                                                                {% endfor %}
+
+                                                            </select>
+                                                            <label for="floatingSelectCity">City</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row mt-3">
+                                                    <div class="col d-flex justify-content-end">
+                                                        <button type="submit" class="btn btn-primary rounded-pill"
+                                                            id="PersonalSaveBtn">
+                                                            Save Changes</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ACCOUNT TAB -->
+
+                        <div class="tab-pane fade" id="v-pills-profile" role="tabpanel"
+                            aria-labelledby="v-pills-profile-tab" tabindex="0">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="card shadow-sm border-1 rounded-more">
+                                        <div class=" card-body">
+                                            <h4 class="h4-blue">Notification Settings</h4>
+                                            <small>Choose what type of email you wish to recieve from
+                                                UniApply.</small>
+                                            <form class="mt-4 " action="">
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <div class="form-check form-switch d-flex align-items-center">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                role="switch" id="EmailflexSwitchCheckChecked" checked>
+                                                            <label class="form-check-label ms-2"
+                                                                for="EmailflexSwitchCheckChecked">Email</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="form-check form-switch d-flex align-items-center">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                role="switch" id="flexSwitchCheckChecked" checked>
+                                                            <label class="form-check-label ms-2"
+                                                                for="SMSflexSwitchCheckChecked">SMS</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="form-check form-switch d-flex align-items-center">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                role="switch" id="PushflexSwitchCheckChecked" checked>
+                                                            <label class="form-check-label ms-2"
+                                                                for="PushflexSwitchCheckChecked">Push
+                                                                Notification</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row mt-3">
+                                                    <div class="col d-flex justify-content-end">
+                                                        <button type="submit" class="btn btn-primary rounded-pill"
+                                                            id="NoficationSaveBtn">
+                                                            Save Changes</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mt-4">
+                                    <div class="card shadow-sm border-1 rounded-more">
+                                        <div class=" card-body">
+                                            <h4 class="h4-blue">Change Profile Picture</h4>
+                                            <small>Your profile photo will be used on your profile and thoughout the
+                                                site.</small>
+                                            <form action="{% url 'Parent:uploadprofilepicture' slug=parent.slug %}"
+                                                method="POST" enctype="multipart/form-data">
+                                                {% csrf_token %}
+                                                <div class="row mt-4">
+                                                    <div class="col-6">
+                                                        <div class="input-group mb-3">
+                                                            <input type="file" class="form-control"
+                                                                id="inputGroupFile02" accept="image/*"
+                                                                name="profile_image">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col">
+                                                        <button type="submit" class="btn btn-primary">Upload</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mt-4">
+                                    <div class="card shadow-sm border-1 rounded-more">
+                                        <div class=" card-body">
+                                            <h4 class="h4-blue">Reset Password</h4>
+                                            <small>Your password should have at least 6 characters.</small>
+                                            <form action="{% url 'Parent:resetpassword' slug=parent.slug %}"
+                                                method="POST">
+                                                {% csrf_token %}
+                                                <div class="row mt-4">
+                                                    <div class="col">
+                                                        <div class="form-floating">
+                                                            <input type="password" class="form-control" id="oldPassword"
+                                                                placeholder="Password" name="oldPassword">
+                                                            <label for="oldPassword">Enter Old Password</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="form-floating">
+                                                            <input type="password" class="form-control" id="newPassword"
+                                                                placeholder="Password" name="newPassword">
+                                                            <label for="newPassword">New Password</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="form-floating">
+                                                            <input type="password" class="form-control"
+                                                                id="confirmPassword" placeholder="Password"
+                                                                name="confirmPassword">
+                                                            <label for="confirmPassword">Confirm New Password</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                {% if messages %}
+                                                {% for message in messages %}
+                                                {% if message.tags == "reset error" %}
+                                                <div {% if message.tags %}
+                                                    class="{{ message.tags }} row ms-2 mt-3 text-danger" {%endif%}>
+                                                    {{message}}
+                                                </div>
+                                                {%endif%}
+                                                {% endfor %}
+                                                {% endif %}
+                                                <div class="row mt-3">
+                                                    <div class="col d-flex justify-content-end">
+                                                        <button type="submit" class="btn btn-danger rounded-pill"
+                                                            id="resetBtn">
+                                                            Reset Password</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- CHILD TAB -->
+
+                        <div class="tab-pane fade" id="v-pills-messages" role="tabpanel"
+                            aria-labelledby="v-pills-messages-tab" tabindex="0">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="card shadow-sm border-1 rounded-more ">
+                                        <div class=" card-body">
+                                            <h4 class="h4-blue">Manage Child</h4>
+                                            <div class="row mt-4 row-cols-1 row-cols-md-3 g-4">
+                                                {% for child in parent.child.all %}
+                                                <div class="col">
+                                                    <div class="card h-100 rounded-3 text-center">
+                                                        <div class="row">
+                                                            <a>{% if child.get_gender_display == 'Boy' %}
+                                                                <img src="{% static 'images/boy_default.png' %}"
+                                                                    class="mt-3" width="100px" height="100px"
+                                                                    style="object-fit: cover;">
+                                                                {% else %}
+                                                                <img src="{% static 'images/girl_default.png' %}"
+                                                                    class="mt-3" width="100px" height="100px"
+                                                                    style="object-fit: cover;">
+                                                                {%endif%}
+                                                            </a>
+                                                            <div class="card-body">
+                                                                <h5 class="card-title">{{child.name}}</h5>
+                                                                <div>
+                                                                    <span class="text-muted">Gender:</span>
+                                                                    <span
+                                                                        id="addedchildgender">{{child.get_gender_display}}</span>
+                                                                    <br>
+                                                                    <span class="text-muted">Date of Birth:</span>
+                                                                    <span
+                                                                        id="addedchilddob">{{child.date_of_birth|date:'j M Y'}}</span>
+                                                                    <br>
+                                                                    <span class="text-muted">Class:</span>
+                                                                    <span
+                                                                        id="addedchildclass">{{child.interested_class}}</span>
+                                                                </div>
+                                                                <div class="container text-center">
+                                                                    <div class="row">
+                                                                        <div
+                                                                            class="col-8 ps-0 d-flex justify-content-end">
+                                                                            <button
+                                                                                class="btn btn-sm btn-outline-primary mt-3"
+                                                                                data-bs-toggle="modal"
+                                                                                data-bs-target="#updateChildModal"
+                                                                                data-child-id="{{ child.id }}">Update
+                                                                                Child</button>
+                                                                        </div>
+                                                                        <div
+                                                                            class="col ps-0 d-flex justify-content-start">
+                                                                            <form id="deleteChildForm"
+                                                                                action="{% url 'Parent:deletechild' pk=child.id %}"
+                                                                                method="post">
+                                                                                {% csrf_token %}
+                                                                                <button type="submit"
+                                                                                    class="btn btn-sm btn-outline-danger mt-3"
+                                                                                    data-bs-toggle="modal"
+                                                                                    data-bs-target="#deleteChildModal"
+                                                                                    data-child-id="{{ child.id }}"><svg
+                                                                                        xmlns="http://www.w3.org/2000/svg"
+                                                                                        width="16" height="16"
+                                                                                        fill="currentColor"
+                                                                                        class="bi bi-trash"
+                                                                                        viewBox="0 0 16 16">
+                                                                                        <path
+                                                                                            d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z" />
+                                                                                        <path
+                                                                                            d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z" />
+                                                                                    </svg></button>
+                                                                            </form>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                {%endfor%}
+                                                <div class="col">
+                                                    <div class="card center-card rounded-3 text-center me-4 h-100">
+                                                        <button type="button"
+                                                            class="btn btn-outline-secondary rounded-circle center-btn mt-5"
+                                                            style="font-size: 30px;" data-bs-toggle="modal"
+                                                            data-bs-target="#addChildModal">+</button>
+                                                        <h6 class="text-muted mt-2 mb-5">Add New Child</h6>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+                        <!-- MY APPLICATIONS TAB -->
+
+                        <div class="tab-pane fade" id="v-pills-settings" role="tabpanel"
+                            aria-labelledby="v-pills-settings-tab" tabindex="0">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="card shadow-sm border-1 rounded-more">
+                                        <div class=" card-body">
+                                            <h4 class="mb-4 h4-blue">My Applications</h4>
+                                            <table class="table mt-3 text-center table-hover">
+                                                {% if all_applications %}
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col">#Sl</th>
+                                                        <th scope="col">Child</th>
+                                                        <th scope="col">School</th>
+                                                        <th scope="col">Applied for</th>
+                                                        <th scope="col">Payment</th>
+                                                        <th scope="col">Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+
+                                                    {% for app in all_applications %}
+                                                    <tr>
+                                                        <td>{{ forloop.counter }}</td>
+                                                        <td>{{ app.child }}</td>
+                                                        <td>{{ app.school }}</td>
+                                                        <td>{{ app.submitted_for_class }}</td>
+                                                        <td>{{ app.is_paid }}</td>
+                                                        <td>
+                                                            {% if not app.is_paid %}
+                                                            <a href="{% url 'Admissions:checkout' pk=app.id %}"
+                                                                type="button" class="btn btn-sm btn-success">Pay
+                                                                Now</a>
+                                                            {% else %}
+                                                            <div class="text-muted">N/A</div>
+                                                            {%endif%}
+                                                        </td>
+                                                    </tr>
+                                                    {%endfor%}
+                                                </tbody>
+                                                {% else %}
+                                                <div class="text-center">You don't have any submitted applications.
+                                                </div>
+                                                {%endif%}
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+</section>
+
+<!-- ADD CHILD MODAL -->
+
+<div class="modal fade" id="addChildModal" tabindex="-1" aria-labelledby="addChildModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content rounded-4 shadow">
+                <div class="modal-header p-5 pb-4 border-bottom-0">
+                    <h1 class="fw-bold mb-0 fs-2">Add New Child Details</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-5 pt-0">
+                    <small class="mb-4">Please fill these details very carefully. These details will be sent to the
+                        school.</small>
+                    <form class="mt-4" action="{% url 'Parent:addchild' slug=parent.slug %}" method="POST">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="exampleFormControlInput1" class="form-label text-muted">What is your child
+                                name?</label>
+                            <input name="name" type="text" class="form-control" id="exampleFormControlInput1"
+                                placeholder="Full Name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="exampleFormControlInput1" class="form-label text-muted">What is your
+                                child?</label>
+                            <br>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="gender" id="inlineRadio1" value="Boy"
+                                    required>
+                                <label class="form-check-label" for="inlineRadio1">Boy</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="gender" id="inlineRadio2"
+                                    value="Girl" required>
+                                <label class="form-check-label" for="inlineRadio2">Girl</label>
+                            </div>
+                        </div>
+                        <div class=" mb-3">
+                            <label for="ChilddateOfBirthInput" class="form-label text-muted">Date of Birth</label>
+                            <input type="text" class="form-control" id="ChilddateOfBirthInput"
+                                placeholder="Enter date of birth" name="date_of_birth" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="interested_class" class="form-label text-muted">In which class you want to take
+                                the admission?</label>
+                            <select class="form-select" id="interested_class_add"
+                                aria-label="Floating label select example" name="interested_class" required>
+                                {% for class in all_classes %}
+                                <option value="{{ class.id }}"
+                                    {% if class.school_class == parent.interested_class.school_class %} selected
+                                    {% endif %}>
+                                    {{ class.school_class }}
+                                </option>
+                                {%endfor%}
+                            </select>
+                        </div>
+                        <button id="submitbtn" class="w-100 mt-2 mb-2 btn btn-lg rounded-3 btn-primary"
+                            type="submit">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- UPDATE CHILD MODAL -->
+
+<div class="modal fade" id="updateChildModal" tabindex="-1" aria-labelledby="updateChildModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content rounded-4 shadow">
+                <div class="modal-header p-5 pb-4 border-bottom-0">
+                    <h1 class="fw-bold mb-0 fs-2">Update Child Details</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-5 pt-0">
+                    <small class="mb-4">Please fill these details very carefully. These details will be sent to the
+                        school.</small>
+                    <form class="mt-4" action="{% url 'Parent:updatechild' slug=parent.slug %}" method="POST">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="childname" class="form-label text-muted">What is your child
+                                name?</label>
+                            <input name="name" type="text" class="form-control" id="childname" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="childgender" class="form-label text-muted">What is your
+                                child?</label>
+                            <br>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="gender" id="childgender1" value="Boy"
+                                    required>
+                                <label class="form-check-label" for="childgender1">Boy</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="gender" id="childgender2"
+                                    value="Girl" required>
+                                <label class="form-check-label" for="childgender2">Girl</label>
+                            </div>
+                        </div>
+                        <div class=" mb-3">
+                            <label for="child_date_of_birth" class="form-label text-muted">Date of Birth</label>
+                            <input type="text" class="form-control" id="child_date_of_birth" name="date_of_birth"
+                                required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="interested_class" class="form-label text-muted">In which class you want to take
+                                the admission?</label>
+                            <select class="form-select" id="interested_class_update"
+                                aria-label="Floating label select example" name="interested_class" required>
+                                {% for class in all_classes %}
+                                <option value="{{ class.id }}">
+                                    {{ class.school_class }}
+                                </option>
+                                {%endfor%}
+                            </select>
+                        </div>
+                        <input type="hidden" id="childidhidden" name="child_id" value="hidden_value">
+                        <button id="updatesubmitbtn" class="w-100 mt-2 mb-2 btn btn-lg rounded-3 btn-primary"
+                            type="submit">Update</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- TOAST -->
+<div class="toast toast-green align-items-center rounded-pill" role="alert" aria-live="assertive" aria-atomic="true"
+    style="position: fixed; top: 8rem; right: 7rem; height: 2.7rem; width:auto;z-index: 9999">
+    <div class="toast-body">
+        Changes Succesfully Updated...!
+    </div>
+</div>
+
+
+{% endblock %}

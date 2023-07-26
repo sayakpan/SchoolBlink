@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+{% extends 'Profiles/base.html' %}
+{% load static %}
+{% block body_block %}
+
+<section id="application-section" class="container">
+    <div class="row mt-4">
+        <div class="card border-1 rounded-lg shadow-sm">
+            <div class="card-body">
+                {% block application_div %}
+                <h4 class="mb-4 h4-blue fw-bold">Application Form</h4>
+                <div class="row mb-3">
+                    <div class="col-6 me-5">
+                        <form
+                            action="{% url 'Admissions:applicationsubmit' slug=school.slug class_id=class_applied_for.id %}"
+                            method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="parent" value="{{parent.id}}">
+                            <input type="hidden" name="school" value="{{school.id}}">
+                            <input type="hidden" name="submitted_for_class" value="{{class_applied_for.id}}">
+
+                            <div class="mb-3">
+                                <label for="parent_name" class="form-label text-muted">Your Name</label>
+                                <input type="text" id="parent_name" class="form-control " value="{{parent.name}}"
+                                    readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label for="mobile" class="form-label text-muted">Mobile Number</label>
+                                <input type="text" id="mobile" class="form-control " value="{{parent.phone_number}}"
+                                    aria-labelledby="mobileinfo">
+                                <div id="mobileinfo" class="form-text">
+                                    Your name and mobile number is taken from your account information
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="child" class="form-label text-muted">For which child you want to
+                                    apply?<span class="text-danger">*</span></label>
+                                <select class="form-select" id="child" aria-label="Floating label select example"
+                                    name="child" aria-labelledby="childinfo">
+                                    {% for child in parent.child.all %}
+                                    <option value="{{ child.id }}">
+                                        {{ child }}
+                                    </option>
+                                    {%endfor%}
+                                </select>
+                                <div id="childinfo" class="form-text">
+                                    Your child's Name, Date of birth and Gender will be taken as per set on child's
+                                    profile.
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="mb-2">
+                                <label for="blood_group" class="form-label text-muted">Blood Group</label>
+                                <input type="text" id="blood_group" class="form-control ">
+                            </div>
+                            <div class="mb-2">
+                                <label for="mother_toungh" class="form-label text-muted">Mother Tongue<span
+                                        class="text-danger">*</span></label>
+                                <input type="text" id="mother_toungh" class="form-control ">
+                            </div>
+                            <div class="mb-2">
+                                <label for="religion" class="form-label text-muted">Religion<span
+                                        class="text-danger">*</span></label>
+                                <input type="text" id="religion" class="form-control ">
+                            </div>
+                            <div class="mb-2">
+                                <label for="category" class="form-label text-muted">Category<span
+                                        class="text-danger">*</span></label>
+                                <input type="text" id="category" class="form-control " aria-labelledby="categoryinfo">
+                                <div id="categoryinfo" class="form-text">
+                                    General/OBC/SC/ST etc.
+                                </div>
+                            </div>
+                            <div class="mb-2">
+                                <label for="address" class="form-label text-muted">Address</label>
+                                <textarea type="text" id="address" class="form-control "
+                                    aria-labelledby="addressinfo"></textarea>
+                                <div id="addressinfo" class="form-text">
+                                    Enter your complete address including city, state and pincode.
+                                </div>
+                            </div>
+                            <div class="mb-2 mt-3 d-flex justify-content-end">
+                                <button class="btn btn-success" type="submit">Proceed<svg style="fill:white"
+                                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                                        <path
+                                            d="m15.146 12.354-5.792 5.792a.5.5 0 0 1-.854-.353V6.207a.5.5 0 0 1 .854-.353l5.792 5.792a.5.5 0 0 1 0 .708Z">
+                                        </path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-5">
+                        <h5>Instructions</h5>
+                        <span class="text-muted">
+                            Fields marked with (*) are mandatory.
+                            <ol>
+                                <li>
+                                    Put 0 or NA wherever applicable.(ex: For housewives put NA in office-address and 0
+                                    in office
+                                    number).</li>
+                                <li>Entering Invalid data will lead to rejection.</li>
+                                <li>We respect your privacy & maintain data integrity</li>
+                            </ol>
+                        </span>
+                        <h5>Information</h5>
+                        <span class="text-muted">
+                            Carefully check details like location of school, class/session for the child applying
+                            for, before making the payment. The payment once made is sent to the school in real time and
+                            is
+                            neither cancelled nor refunded by them. After the payment is complete, fill and submit the
+                            application form that follows to complete your application.</span>
+                        <div class="mt-4">
+                            <h5>School Applying For</h5>
+                            <div>
+                                <div class="row ">
+                                    <div class="col-3">
+                                        <img src="{{ school.logo.url }}" width="80" height="80"
+                                            class="ms-4 my-3 border shadow-sm rounded-circle" style="object-fit: cover;"
+                                            alt="{{ school.logo.url }}">
+                                    </div>
+                                    <div class="col mt-3 align-items-center justify-content-right">
+                                        <h4 class="h4 text-start text-navy">{{school.school_name}}</h4>
+                                        <div class="text-secondary">
+                                            {{ school.city.city_name }}, {{ school.state.state_name }}
+                                            <br>
+                                            <span class="text-navy">Class Applied For :
+                                                {{class_applied_for.class_opened}}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {%endblock%}
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
