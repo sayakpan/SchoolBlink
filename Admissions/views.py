@@ -91,6 +91,11 @@ class SchoolApplicationSubmitView(CreateView, LoginRequiredMixin, ParentTest):
         application.name = child.name
         application.gender = child.gender
         application.date_of_birth = child.date_of_birth
+        application.blood_group = form.cleaned_data.get("blood_group")
+        application.mother_toungh = form.cleaned_data.get("mother_toungh")
+        application.religion = form.cleaned_data.get("religion")
+        application.category = form.cleaned_data.get("category")
+        application.address = form.cleaned_data.get("address")
         application.save()
         print("SchoolApplicationSubmitView : Application Submitted")
         return super().form_valid(form)

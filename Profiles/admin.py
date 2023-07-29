@@ -7,7 +7,7 @@ from import_export import resources, fields
 class SchoolProfileImportResource(resources.ModelResource):
     class Meta:
         model = School_Profiles
-        exclude = ("id",)
+        exclude = ("slug",)
 
 
 class SchoolProfileExportResource(resources.ModelResource):
