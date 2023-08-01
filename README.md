@@ -2,6 +2,11 @@
 
 SchoolBlink is a Django-based website that allows schools to list themselves, showcase their details, and open admissions for specific classes. Parents can create their profiles, log in, and create child profiles to apply to their desired schools. Schools have the flexibility to set their application prices, which parents need to pay. The project integrates with Razorpay Gateway API to facilitate secure and seamless payments. Additionally, both schools and parents have personalized dashboards to manage their information and upload profile pictures.
 
+## Link
+
+This site is hosted at PythonAnywhere. Click on the link given below to see.
+https://sayakpan.pythonanywhere.com/
+
 ## Installation
 
 To get started with SchoolBlink, follow these steps:
