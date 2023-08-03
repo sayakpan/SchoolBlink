@@ -41,12 +41,14 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "rest_framework",
     "import_export",
     "Profiles",
     "Accounts",
     "Parent",
     "Admissions",
 ]
+
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",

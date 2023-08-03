@@ -25,6 +25,9 @@ urlpatterns = [
     path("profiles/", include("Profiles.urls")),
     path("parent/", include("Parent.urls")),
     path("admissions/", include("Admissions.urls")),
+
+    # Rest API URLS
+    path("api/school/", include("Profiles.api.urls")),
 ]
 
 if settings.DEBUG:
