@@ -12,6 +12,8 @@ from Profiles.models import (
     SchoolType, SchoolFormat, SchoolBoard,
     SchoolClass, School_Profiles, SchoolFacilities
 )
+from Admissions.api.serializers import AdmissionOpenClassesSerializer
+from Admissions.models import AdmissionOpenClasses
 
 
 class CountryListView(APIView):
@@ -86,7 +88,9 @@ class SchoolProfileDetailView(RetrieveAPIView):
     def get(self, request, *args, **kwargs):
         instance = self.get_object()
         facilities = SchoolFacilities.objects.filter(school=instance)
+        admissions = AdmissionOpenClasses.objects.filter(school=instance)
         serializer = self.serializer_class(instance)
         data = serializer.data
         data['facilities'] = SchoolFacilitiesSerializer(facilities, many=True).data
+        data['admissions'] = AdmissionOpenClassesSerializer(admissions, many=True).data
         return Response(data)
