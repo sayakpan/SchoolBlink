@@ -1,27 +1,176 @@
 city_name,state_name,country_name
-Bhopal,Madhya Pradesh,India
-Aurangabad,Maharashtra,India
-Nagpur,Maharashtra,India
-Rohtak,Haryana,India
-Tumakuru,Karnataka,India
-Jaipur,Rajasthan,India
-Indore,Madhya Pradesh,India
-Sonipat,Haryana,India
-Navi Mumbai,Maharashtra,India
-Thane,Maharashtra,India
-Chennai,Tamil Nadu,India
-Hyderabad,Telangana,India
-Bangalore | Bengaluru,Karnataka,India
-Mumbai,Maharashtra,India
-Dubai,Dubai,UAE
-Jhajjar,Haryana,India
-Alwar,Rajasthan,India
-Pune,Maharashtra,India
-Ghaziabad,Uttar Pradesh,India
+Visakhapatnam,Andhra Pradesh,India
+Vijayawada,Andhra Pradesh,India
+Tirupati,Andhra Pradesh,India
+Guntur,Andhra Pradesh,India
+Nellore,Andhra Pradesh,India
+Itanagar,Arunachal Pradesh,India
+Tawang,Arunachal Pradesh,India
+Ziro,Arunachal Pradesh,India
+Pasighat,Arunachal Pradesh,India
+Tezpur,Assam,India
+Guwahati,Assam,India
+Silchar,Assam,India
+Dibrugarh,Assam,India
+Jorhat,Assam,India
+Patna,Bihar,India
+Gaya,Bihar,India
+Bhagalpur,Bihar,India
+Muzaffarpur,Bihar,India
+Purnia,Bihar,India
+Raipur,Chhattisgarh,India
+Bhilai,Chhattisgarh,India
+Bilaspur,Chhattisgarh,India
+Korba,Chhattisgarh,India
+Raigarh,Chhattisgarh,India
+Panaji,Goa,India
+Margao,Goa,India
+Vasco da Gama,Goa,India
+Mapusa,Goa,India
+Ponda,Goa,India
+Ahmedabad,Gujarat,India
+Surat,Gujarat,India
+Vadodara,Gujarat,India
+Rajkot,Gujarat,India
+Bhavnagar,Gujarat,India
+Chandigarh,Haryana,India
+Gurgaon,Haryana,India
 Faridabad,Haryana,India
-Gurgaon | Gurugram,Haryana,India
-Noida,Uttar Pradesh,India
-Greater Noida West,Uttar Pradesh,India
-Greater Noida,Uttar Pradesh,India
+Panipat,Haryana,India
+Ambala,Haryana,India
+Shimla,Himachal Pradesh,India
+Manali,Himachal Pradesh,India
+Dharamshala,Himachal Pradesh,India
+Solan,Himachal Pradesh,India
+Mandi,Himachal Pradesh,India
+Ranchi,Jharkhand,India
+Jamshedpur,Jharkhand,India
+Dhanbad,Jharkhand,India
+Bokaro,Jharkhand,India
+Hazaribagh,Jharkhand,India
+Bengaluru,Karnataka,India
+Mysuru,Karnataka,India
+Mangaluru,Karnataka,India
+Hubballi,Karnataka,India
+Belagavi,Karnataka,India
+Thiruvananthapuram,Kerala,India
+Kochi,Kerala,India
+Kozhikode,Kerala,India
+Kollam,Kerala,India
+Thrissur,Kerala,India
+Bhopal,Madhya Pradesh,India
+Indore,Madhya Pradesh,India
+Gwalior,Madhya Pradesh,India
+Jabalpur,Madhya Pradesh,India
+Ujjain,Madhya Pradesh,India
+Mumbai,Maharashtra,India
+Pune,Maharashtra,India
+Nagpur,Maharashtra,India
+Nashik,Maharashtra,India
+Thane,Maharashtra,India
+Imphal,Manipur,India
+Churachandpur,Manipur,India
+Thoubal,Manipur,India
+Bishnupur,Manipur,India
+Ukhrul,Manipur,India
+Shillong,Meghalaya,India
+Tura,Meghalaya,India
+Nongstoin,Meghalaya,India
+Jowai,Meghalaya,India
+Williamnagar,Meghalaya,India
+Aizawl,Mizoram,India
+Lunglei,Mizoram,India
+Champhai,Mizoram,India
+Serchhip,Mizoram,India
+Lawngtlai,Mizoram,India
+Kohima,Nagaland,India
+Dimapur,Nagaland,India
+Mokokchung,Nagaland,India
+Tuensang,Nagaland,India
+Wokha,Nagaland,India
+Bhubaneswar,Odisha,India
+Cuttack,Odisha,India
+Rourkela,Odisha,India
+Puri,Odisha,India
+Sambalpur,Odisha,India
+Amritsar,Punjab,India
+Ludhiana,Punjab,India
+Jalandhar,Punjab,India
+Patiala,Punjab,India
+Bathinda,Punjab,India
+Jaipur,Rajasthan,India
+Jodhpur,Rajasthan,India
+Udaipur,Rajasthan,India
+Kota,Rajasthan,India
+Bikaner,Rajasthan,India
+Gangtok,Sikkim,India
+Namchi,Sikkim,India
+Gyalshing,Sikkim,India
+Mangan,Sikkim,India
+Ravangla,Sikkim,India
+Chennai,Tamil Nadu,India
+Coimbatore,Tamil Nadu,India
+Madurai,Tamil Nadu,India
+Tiruchirappalli,Tamil Nadu,India
+Salem,Tamil Nadu,India
+Hyderabad,Telangana,India
+Warangal,Telangana,India
+Nizamabad,Telangana,India
+Khammam,Telangana,India
+Karimnagar,Telangana,India
+Agartala,Tripura,India
+Udaipur,Tripura,India
+Dharmanagar,Tripura,India
+Kailasahar,Tripura,India
+Khowai,Tripura,India
 Lucknow,Uttar Pradesh,India
-Delhi,Delhi,India
+Kanpur,Uttar Pradesh,India
+Ghaziabad,Uttar Pradesh,India
+Agra,Uttar Pradesh,India
+Varanasi,Uttar Pradesh,India
+Dehradun,Uttarakhand,India
+Haridwar,Uttarakhand,India
+Roorkee,Uttarakhand,India
+Haldwani,Uttarakhand,India
+Rudrapur,Uttarakhand,India
+Kolkata,West Bengal,India
+Howrah,West Bengal,India
+Durgapur,West Bengal,India
+Siliguri,West Bengal,India
+Asansol,West Bengal,India
+Port Blair,Andaman and Nicobar Islands,India
+Nicobar,Andaman and Nicobar Islands,India
+Havelock,Andaman and Nicobar Islands,India
+Neil,Andaman and Nicobar Islands,India
+Car Nicobar,Andaman and Nicobar Islands,India
+Chandigarh,Chandigarh,India
+Silvassa,Dadra and Nagar Haveli and Daman and Diu,India
+Daman,Dadra and Nagar Haveli and Daman and Diu,India
+Diu,Dadra and Nagar Haveli and Daman and Diu,India
+Kavaratti,Lakshadweep,India
+Minicoy,Lakshadweep,India
+Amini,Lakshadweep,India
+Kalpeni,Lakshadweep,India
+Agatti,Lakshadweep,India
+New Delhi,Delhi,India
+South Delhi,Delhi,India
+East Delhi,Delhi,India
+North Delhi,Delhi,India
+West Delhi,Delhi,India
+Central Delhi,Delhi,India
+Shahdara,Delhi,India
+Puducherry,Puducherry,India
+Oulgaret,Puducherry,India
+Karaikal,Puducherry,India
+Mahe,Puducherry,India
+Yanam,Puducherry,India
+Leh,Ladakh,India
+Kargil,Ladakh,India
+Dras,Ladakh,India
+Nubra,Ladakh,India
+Zanskar,Ladakh,India
+Srinagar,Jammu and Kashmir,India
+Jammu,Jammu and Kashmir,India
+Anantnag,Jammu and Kashmir,India
+Baramulla,Jammu and Kashmir,India
+Udhampur,Jammu and Kashmir,India

@@ -25,7 +25,7 @@ class State(models.Model):
 
 class City(models.Model):
     id = models.AutoField(primary_key=True, unique=True, editable=False)
-    city_name = models.CharField(max_length=50, unique=True)
+    city_name = models.CharField(max_length=50, unique=False)
     state_id = models.ForeignKey(State, on_delete=models.DO_NOTHING)
     country_id = models.ForeignKey(Country, on_delete=models.DO_NOTHING)
 

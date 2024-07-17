@@ -10,13 +10,33 @@ class CountrySerializer(serializers.ModelSerializer):
 class StateSerializer(serializers.ModelSerializer):
     class Meta:
         model = State
-        fields = "__all__"
+        fields = ['id', 'state_name']
+    
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['country'] = {
+            'id': instance.country_id.id,
+            'name': instance.country_id.country_name
+        }
+        return representation
 
 
 class CitySerializer(serializers.ModelSerializer):
     class Meta:
         model = City
-        fields = "__all__"
+        fields = ['id', 'city_name']
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['state'] = {
+            'id': instance.state_id.id,
+            'name': instance.state_id.state_name
+        }
+        representation['country'] = {
+            'id': instance.country_id.id,
+            'name': instance.country_id.country_name
+        }
+        return representation
 
 
 class SchoolTypeSerializer(serializers.ModelSerializer):
