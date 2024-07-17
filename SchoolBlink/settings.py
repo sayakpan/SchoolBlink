@@ -34,8 +34,13 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+
+    # Third-Party Apps
     "rest_framework",
+    'rest_framework.authtoken',
     "import_export",
+
+    # Project's apps
     "Profiles",
     "Accounts",
     "Parent",
@@ -52,6 +57,12 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ]
+}
 
 ROOT_URLCONF = "SchoolBlink.urls"
 
@@ -83,6 +94,18 @@ DATABASES = {
         "NAME": BASE_DIR / os.getenv('DATABASE_NAME'),
     }
 }
+
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'SchoolBlinkDB-Main',   # Replace with your database name
+#         'USER': 'postgres',                # Replace with the PostgreSQL user you created
+#         'PASSWORD': 'sayak007',         # Replace with the password for the PostgreSQL user
+#         'HOST': 'localhost',            # If PostgreSQL is running locally, keep it as 'localhost'
+#         'PORT': '5432',                 # Default PostgreSQL port
+#     }
+# }
 
 
 # Password validation

@@ -10,7 +10,7 @@ app_name = "schools"
 
 urlpatterns=[
     path("",SchoolProfilesListView.as_view(),name="school-list"),
-    path("<slug:slug>/", SchoolProfileDetailView.as_view(), name="school-detail"),
+    path("profile/<slug:slug>/", SchoolProfileDetailView.as_view(), name="school-detail"),
     path("classes/",SchoolClassListView.as_view(),name="all-classes"),
     path("countries/", CountryListView.as_view(), name="country-list"),
     path("states/", StateListView.as_view(), name="state-list"),
