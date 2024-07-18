@@ -88,24 +88,24 @@ WSGI_APPLICATION = "SchoolBlink.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-# DATABASES = {
-#     "default": {
-#         "ENGINE": os.getenv('DATABASE_ENGINE'),
-#         "NAME": BASE_DIR / os.getenv('DATABASE_NAME'),
-#     }
-# }
-
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'SchoolBlinkDB-Main',   # Replace with your database name
-        'USER': 'postgres',                # Replace with the PostgreSQL user you created
-        'PASSWORD': 'sayak007',         # Replace with the password for the PostgreSQL user
-        'HOST': 'localhost',            # If PostgreSQL is running locally, keep it as 'localhost'
-        'PORT': '5432',                 # Default PostgreSQL port
+if os.getenv('SERVER') == 'Prod':
+    DATABASES = {
+        "default": {
+            "ENGINE": os.getenv('DATABASE_ENGINE'),
+            "NAME": BASE_DIR / os.getenv('DATABASE_NAME'),
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'SchoolBlinkDB-Main',
+            'USER': 'postgres',
+            'PASSWORD': 'sayak007',
+            'HOST': 'localhost',
+            'PORT': '5432',
+        }
+    }
 
 
 # Password validation
