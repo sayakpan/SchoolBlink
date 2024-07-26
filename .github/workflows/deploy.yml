@@ -21,6 +21,7 @@ jobs:
     - name: Deploy to EC2
       run: |
         ssh -o StrictHostKeyChecking=no ubuntu@13.51.198.231 << 'EOF'
+          set -e
           cd SchoolBlink
           git pull origin main
           source DjangoEnv/bin/activate
